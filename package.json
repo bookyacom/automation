@@ -1,0 +1,25 @@
+{
+  "name": "automation",
+  "version": "1.0.0",
+  "description": "Automated scripts repository",
+  "main": "index.js",
+  "scripts": {
+    "auto:dataentry": "DEBUG=* IN=dataentry/test.csv OUT=dataentry/out.json node --harmony dataentry",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bookyacom/automation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bookyacom/automation/issues"
+  },
+  "homepage": "https://github.com/bookyacom/automation#readme",
+  "dependencies": {
+    "babel": "^5.8.21",
+    "csv-parse": "^1.0.0",
+    "debug": "^2.2.0"
+  }
+}
