@@ -95,7 +95,7 @@ function analytics() {
 
 function transform(datum) {
   try {
-    return {
+    let p = {
       name : datum[1],
       profile_photo : datum[2],
       cover_photo : datum[3],
@@ -110,51 +110,62 @@ function transform(datum) {
       real_name_4 : datum[12],
       real_name_5 : datum[13],
       real_name_6 : datum[14],
-      management : datum[15],
-      email_manager : datum[16],
-      territories : datum[17],
+      real_name_7 : datum[15],
+      real_name_8 : datum[16],
+      real_name_9 : datum[17],
+      real_name_10 : datum[18],
+      real_name_11 : datum[19],
+      real_name_12 : datum[20],
+      management : datum[21],
+      email_manager : datum[22],
+      territories : datum[23],
       agency : {
         global : {
-          name : datum[18],
-          agent : datum[19],
-          email : datum[20],
-          number : datum[21],
-          territories : datum[22]
+          name : datum[24],
+          agent : datum[25],
+          email : datum[26],
+          number : datum[27],
+          territories : datum[28]
         },
 
         europe : {
-          name : datum[23],
-          agent : datum[24],
-          email : datum[25],
-          number : datum[26],
-          territories : datum[27]
+          name : datum[29],
+          agent : datum[30],
+          email : datum[31],
+          number : datum[32],
+          territories : datum[33]
         },
 
         usa : {
-          name : datum[28],
-          agent : datum[29],
-          email : datum[30],
-          number : datum[31],
+          name : datum[34],
+          agent : datum[35],
+          email : datum[36],
+          number : datum[37],
         }
       },
-      direct_email : datum[32],
-      record_labels : datum[33],
-      bandsintown : datum[34],
-      soundcloud_featured : datum[35],
-      beatport_dj_id : datum[36],
-      beatport_pro_id : datum[37],
-      facebook_page : datum[38],
-      instagram_id : datum[39],
-      itunes_id : datum[40],
-      lastfm_id : datum[41],
-      mixcloud_id : datum[42],
-      partyflock : datum[43],
-      songkick_id : datum[44],
-      soundcloud_id : datum[45],
-      spotify_id : datum[46],
-      twitter_id : datum[47],
-      youtube_channel : datum[48]
+      direct_email : datum[38],
+      record_labels : datum[39],
+      bandsintown : datum[40],
+      soundcloud_featured : datum[41],
+      beatport_dj_id : datum[42],
+      beatport_pro_id : datum[43],
+      facebook_page : datum[44],
+      instagram_id : datum[45],
+      itunes_id : datum[46],
+      lastfm_id : datum[47],
+      mixcloud_id : datum[48],
+      partyflock : datum[49],
+      songkick_id : datum[50],
+      soundcloud_id : datum[51],
+      spotify_id : datum[52],
+      twitter_id : datum[53],
+      youtube_channel : datum[54]
     };
+
+    // Add genres to the genre list
+    
+
+    return p;
   } catch (err) {
     error(err);
     return null;
@@ -188,6 +199,7 @@ cli.withStdinLines((lines, nl) => {
       .filter((e) => (e !== null));
   }).then(function (results) {
     console.log(JSON.stringify(results, null, 2));
+    // analytics();
   }).catch(function (err) {
     error(err);
     process.exit(1);
