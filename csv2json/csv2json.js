@@ -1,13 +1,16 @@
 'use strict';
 
-import fs     from 'fs';
-import debug  from 'debug';
-import parser from 'csv-parse';
-import cli    from 'cli';
-import util   from 'util';
+import fs      from 'fs';
+import debug   from 'debug';
+import parser  from 'csv-parse';
+import cli     from 'cli';
+import util    from 'util';
+import request from 'request';
+import qs      from 'querystring';
 
 const trace = debug('automation:csv2json:trace');
 const error = debug('automation:csv2json:error');
+const SCID  = 'd6b7d582b868c00f7aaafde69a2416b3';
 
 let stats = {
   total_profiles : 0,
@@ -30,7 +33,9 @@ let stats = {
   with_soundlcoud_id : 0,
   with_spotify_id : 0,
   with_twitter_id : 0,
-  with_youtube_channel : 0
+  with_youtube_channel : 0,
+  with_featured_track : 0,
+  genres : {}
 };
 
 function metric(p) {
@@ -56,10 +61,10 @@ function metric(p) {
   (p.twitter_id) ? stats.with_twitter_id++ : null;
   (p.youtube_channel) ? stats.with_youtube_channel++ : null;
 
-  return Promise.resolve(p);
+  return p;
 }
 
-function analytics() {
+function analytics(out) {
   function per(met) {
     return '(' + (met / stats.total_profiles * 100).toFixed(2) + ' %)';
   }
@@ -68,29 +73,29 @@ function analytics() {
     return ('    ' + met).slice(-4) + '/' + stats.total_profiles + ' ';
   }
 
-  console.log('TOTAL............................. ' + stats.total_profiles);
-  // console.log('EMPTY............................. ' + stats.empty_profiles + ' ' + per(stats.empty_profiles));
-  console.log('---------------------------------------------------------');
-  console.log('with profile photo................ ' + tot(stats.with_profile_photo) + per(stats.with_profile_photo));
-  console.log('with cover photo.................. ' + tot(stats.with_cover_photo) + per(stats.with_cover_photo));
-  console.log('complete for recommendation page.. ' + tot(stats.with_short_info) + per(stats.with_short_info));
-  console.log('complete for featured page........ ' + tot(stats.with_mini_info) + per(stats.with_mini_info));
-  console.log('with contact information.......... ' + tot(stats.with_contact_info) + per(stats.with_contact_info));
-  // console.log('---------------------------------------------------------');
-  // console.log('social media: BandsInTown......... ' + tot(with_bandsintown) + per(with_bandsintown));
-  // console.log('social media: Beatport DJ......... ' + tot(with_beatport_dj) + per(with_beatport_dj));
-  // console.log('social media: Beatport Pro........ ' + tot(with_beatport_pro) + per(with_beatport_pro));
-  // console.log('social media: Facebook Page....... ' + tot(with_facebook_page) + per(with_facebook_page));
-  // console.log('social media: Instagram........... ' + tot(with_instagram_id) + per(with_instagram_id));
-  // console.log('social media: iTunes.............. ' + tot(with_itunes_id) + per(with_itunes_id));
-  // console.log('social media: LastFM.............. ' + tot(with_lastfm_id) + per(with_lastfm_id));
-  // console.log('social media: MixCloud............ ' + tot(with_mixcloud_id) + per(with_mixcloud_id));
-  // console.log('social media: PartyFlock.......... ' + tot(with_partyflock) + per(with_partyflock));
-  // console.log('social media: SongKick............ ' + tot(with_songkick_id) + per(with_songkick_id));
-  // console.log('social media: SoundCloud.......... ' + tot(with_soundlcoud_id) + per(with_soundlcoud_id));
-  // console.log('social media: Spotify............. ' + tot(with_spotify_id) + per(with_spotify_id));
-  // console.log('social media: Twitter............. ' + tot(with_twitter_id) + per(with_twitter_id));
-  // console.log('social media: Youtube............. ' + tot(with_youtube_channel) + per(with_youtube_channel));
+  out('TOTAL............................. ' + stats.total_profiles);
+  out('---------------------------------------------------------');
+  out('with profile photo................ ' + tot(stats.with_profile_photo) + per(stats.with_profile_photo));
+  out('with cover photo.................. ' + tot(stats.with_cover_photo) + per(stats.with_cover_photo));
+  out('complete for recommendation page.. ' + tot(stats.with_short_info) + per(stats.with_short_info));
+  out('complete for featured page........ ' + tot(stats.with_mini_info) + per(stats.with_mini_info));
+  out('with contact information.......... ' + tot(stats.with_contact_info) + per(stats.with_contact_info));
+  out('with featured track............... ' + tot(stats.with_featured_track) + per(stats.with_featured_track));
+  out('---------------------------------------------------------');
+  out('social media: BandsInTown......... ' + tot(stats.with_bandsintown) + per(stats.with_bandsintown));
+  out('social media: Beatport DJ......... ' + tot(stats.with_beatport_dj) + per(stats.with_beatport_dj));
+  out('social media: Beatport Pro........ ' + tot(stats.with_beatport_pro) + per(stats.with_beatport_pro));
+  out('social media: Facebook Page....... ' + tot(stats.with_facebook_page) + per(stats.with_facebook_page));
+  out('social media: Instagram........... ' + tot(stats.with_instagram_id) + per(stats.with_instagram_id));
+  out('social media: iTunes.............. ' + tot(stats.with_itunes_id) + per(stats.with_itunes_id));
+  out('social media: LastFM.............. ' + tot(stats.with_lastfm_id) + per(stats.with_lastfm_id));
+  out('social media: MixCloud............ ' + tot(stats.with_mixcloud_id) + per(stats.with_mixcloud_id));
+  out('social media: PartyFlock.......... ' + tot(stats.with_partyflock) + per(stats.with_partyflock));
+  out('social media: SongKick............ ' + tot(stats.with_songkick_id) + per(stats.with_songkick_id));
+  out('social media: SoundCloud.......... ' + tot(stats.with_soundlcoud_id) + per(stats.with_soundlcoud_id));
+  out('social media: Spotify............. ' + tot(stats.with_spotify_id) + per(stats.with_spotify_id));
+  out('social media: Twitter............. ' + tot(stats.with_twitter_id) + per(stats.with_twitter_id));
+  out('social media: Youtube............. ' + tot(stats.with_youtube_channel) + per(stats.with_youtube_channel));
 }
 
 function transform(datum) {
@@ -163,13 +168,57 @@ function transform(datum) {
     };
 
     // Add genres to the genre list
+    let genres = datum[6].split(',').map((e) => { return e.trim().toLowerCase(); });
     
+    genres.forEach(function (genre) {
+      stats.genres[genre] = true;
+    });
 
     return p;
   } catch (err) {
     error(err);
     return null;
   }
+}
+
+function getFeaturedTrack(profile) {
+  function req(url) {
+    return new Promise((yes, no) => {
+      request.get(url + '?' + qs.stringify(params), function (err, res, body) {
+        if (err) return no(err);
+        yes(res);
+      });
+    });
+  }
+
+  let params = { client_id : SCID, order_by : 'favoritings_count' };
+  let userId = profile.soundcloud_id;
+
+  // Ignore if no soundcloudID
+  if (!userId) {
+    profile.featured_track = '';
+    return Promise.resolve(profile);
+  }
+
+  return req('https://api.soundcloud.com/users/' + userId + '/tracks')
+    .then((res) => {
+      let tracks = JSON.parse(res.body);
+
+      profile.featured_track = '';
+
+      if (!Array.isArray(tracks)) {
+        return Promise.resolve(profile);
+      }
+
+      let featured = tracks.shift();
+
+      if (featured) {
+        profile.featured_track = featured.id;
+        stats.with_featured_track++;
+      }
+
+      return Promise.resolve(profile);
+    });
 }
 
 cli.withStdinLines((lines, nl) => {
@@ -190,17 +239,21 @@ cli.withStdinLines((lines, nl) => {
   lines.forEach((line) => collection.push(parse(line)));
 
   Promise.all(collection).then((parsed) => {
-    return parsed
-      .map((datum) => {
-        let formatted = transform(datum.shift());
-        metric(formatted);
-        return formatted;
-      })
-      .filter((e) => (e !== null));
-  }).then(function (results) {
-    console.log(JSON.stringify(results, null, 2));
-    // analytics();
-  }).catch(function (err) {
+    return parsed.map((d) => metric(transform(d.shift()))).filter((e) => (e !== null));
+  }).then((res) => {
+    // Find the soundcloud ID for each profile
+    let profiles = [];
+
+    for (let profile of res) {
+      profiles.push(getFeaturedTrack(profile));
+    }
+
+    return Promise.all(profiles);
+  }).then((res) => {
+    // Output the results to STDOUT and the metrics to STDERR
+    console.log(JSON.stringify(res, null, 2));
+    analytics(console.error);
+  }).catch((err) => {
     error(err);
     process.exit(1);
   });
