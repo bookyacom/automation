@@ -124,7 +124,7 @@
     "partyflock": "64731:ME",
     "songkick_id": "1319026-and-me",
     "soundcloud_id": "andmeandyou",
-    "spotify_id": "-",
+    "spotify_id": "",
     "twitter_id": "@andmeandyou",
     "youtube_channel": "keinemusik/channels",
     "featured_track": 220234659
@@ -189,7 +189,7 @@
     "partyflock": "5983:2ManyDJs",
     "songkick_id": "6117049-2manydjs",
     "soundcloud_id": "2many-djs",
-    "spotify_id": "-",
+    "spotify_id": "",
     "twitter_id": "@2manydjsTour",
     "youtube_channel": "https://www.youtube.com/channel/UCHvcelhZMS1T1bUTCC5r54w",
     "featured_track": 39265003
@@ -317,7 +317,7 @@
     "lastfm_id": "2CV+Musique",
     "mixcloud_id": "2cv_musique/",
     "partyflock": "73475:2CV",
-    "songkick_id": "-",
+    "songkick_id": "",
     "soundcloud_id": "2cv-musique",
     "spotify_id": "3bAK9ssRURzIXt0bsGMaDw",
     "twitter_id": "@2CV_musique",
@@ -382,10 +382,10 @@
     "lastfm_id": "",
     "mixcloud_id": "aplusplusalex/",
     "partyflock": "85110:A",
-    "songkick_id": "-",
+    "songkick_id": "",
     "soundcloud_id": "alexmindgames",
     "spotify_id": "21l4vhetbzcv72rlnu3pspz2i",
-    "twitter_id": "-",
+    "twitter_id": "",
     "youtube_channel": "nerdz88",
     "featured_track": 222514559
   },
@@ -447,7 +447,7 @@
     "lastfm_id": "",
     "mixcloud_id": "artist:a-brothers/",
     "partyflock": "69972:A-Brothers",
-    "songkick_id": "-",
+    "songkick_id": "",
     "soundcloud_id": "a-brothers",
     "spotify_id": "7bxXctIph1GaxH0ClIScT7",
     "twitter_id": "",
@@ -938,14 +938,14 @@
         "name": "Jackmode Agency",
         "agent": "Daniel",
         "email": "daniel@jackmode.de",
-        "number": "-",
+        "number": "",
         "territories": "USA"
       },
       "europe": {
         "name": "Liason Artist",
         "agent": "hamilton@liaisonartists.com",
-        "email": "-",
-        "number": "-",
+        "email": "",
+        "number": "",
         "territories": "Australia"
       },
       "usa": {
