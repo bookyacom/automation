@@ -7,10 +7,11 @@ import cli     from 'cli';
 import util    from 'util';
 import request from 'request';
 import qs      from 'querystring';
+import co      from 'co';
 
 const trace = debug('automation:csv2json:trace');
 const error = debug('automation:csv2json:error');
-const SCID  = 'd6b7d582b868c00f7aaafde69a2416b3';
+const SCID  = '62d2dd20dd7849715a5dc9b200e7df47';
 
 let stats = {
   total_profiles : 0,
@@ -184,14 +185,16 @@ function transform(datum) {
 function getFeaturedTrack(profile) {
   function req(url) {
     return new Promise((yes, no) => {
-      request.get(url + '?' + qs.stringify(params), function (err, res, body) {
+      let apiurl = url + '?' + qs.stringify(params);
+      trace(apiurl);
+      request.get(apiurl, function (err, res, body) {
         if (err) return no(err);
         yes(res);
       });
     });
   }
 
-  let params = { client_id : SCID, order_by : 'favoritings_count' };
+  let params = { client_id : SCID, order_by : 'favoritings_count', limit : 1 };
   let userId = profile.soundcloud_id;
 
   // Ignore if no soundcloudID
@@ -244,11 +247,18 @@ cli.withStdinLines((lines, nl) => {
     // Find the soundcloud ID for each profile
     let profiles = [];
 
-    for (let profile of res) {
-      profiles.push(getFeaturedTrack(profile));
-    }
+    return co(function *() {
+      for (let profile of res) {
+        try {
+          let completed = yield getFeaturedTrack(profile);
+          profiles.push(completed);
+        } catch (err) {
+          error(err);
+        }
+      }
 
-    return Promise.all(profiles);
+      return profiles;
+    });
   }).then((res) => {
     // Output the results to STDOUT and the metrics to STDERR
     console.log(JSON.stringify(res, null, 2));
