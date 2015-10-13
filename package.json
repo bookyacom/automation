@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "auto:dataentry": "DEBUG=* IN=dataentry/test.csv OUT=dataentry/out.json node --harmony dataentry",
+    "auto:show": "node --harmony ./show",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,11 +19,23 @@
   },
   "homepage": "https://github.com/bookyacom/automation#readme",
   "dependencies": {
+    "babel": "^5.8.23",
     "babel-core": "^5.8.23",
     "cli": "^0.9.0",
     "co": "^4.6.0",
+    "config": "^1.16.0",
     "csv-parse": "^1.0.0",
     "debug": "^2.2.0",
-    "request": "^2.61.0"
+    "node-geocoder": "^3.4.1",
+    "orientjs": "^2.1.0",
+    "pg": "^4.4.2",
+    "pg-hstore": "^2.3.2",
+    "request": "^2.61.0",
+    "sequelize": "^3.11.0",
+    "lodash.template": "^3.6.2",
+    "moment": "^2.10.6",
+    "moment-timezone": "^0.4.0",
+    "songkick-wrapper": "^1.2.1",
+    "timezoner": "^0.1.9"
   }
 }
