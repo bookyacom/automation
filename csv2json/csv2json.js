@@ -7,7 +7,7 @@ import cli    from 'cli';
 const trace  = debug('automation:csv2json:trace');
 const error  = debug('automation:csv2json:error');
 const stdout = console.log;
-const stderr = console.err;
+const stderr = console.error;
 
 let stats = {
   total_profiles : 0,

@@ -1,12 +1,14 @@
 'use strict';
 
+import cli     from 'cli';
+import co      from 'co';
 import request from 'request';
 import qs      from 'querystring';
 import debug   from 'debug';
 
 const trace  = debug('automation:track:trace');
 const error  = debug('automation:track:error');
-const stderr = console.err;
+const stderr = console.error;
 const stdout = console.log;
 const SCID   = '62d2dd20dd7849715a5dc9b200e7df47';
 
@@ -65,15 +67,17 @@ function main(profiles) {
       try {
         let completed = yield getFeaturedTrack(profile);
         collection.push(completed);
+
+        stderr('Completed ' + profile.name + '... [v]');
       } catch (err) {
-        error('Skipped ' + profile.name + '...');
+        error('Skipped ' + profile.name + '... [.]');
         error(err);
       }
     }
 
     return collection;
   }).then((res) => {
-    stdout(JSON.stringify(res));
+    stdout(JSON.stringify(res, null, 2));
   }).catch((err) => {
     stderr(err);
     process.exit(1);
