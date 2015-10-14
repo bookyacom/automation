@@ -1,17 +1,13 @@
 'use strict';
 
-import fs      from 'fs';
-import debug   from 'debug';
-import parser  from 'csv-parse';
-import cli     from 'cli';
-import util    from 'util';
-import request from 'request';
-import qs      from 'querystring';
-import co      from 'co';
+import debug  from 'debug';
+import parser from 'csv-parse';
+import cli    from 'cli';
 
-const trace = debug('automation:csv2json:trace');
-const error = debug('automation:csv2json:error');
-const SCID  = '62d2dd20dd7849715a5dc9b200e7df47';
+const trace  = debug('automation:csv2json:trace');
+const error  = debug('automation:csv2json:error');
+const stdout = console.log;
+const stderr = console.err;
 
 let stats = {
   total_profiles : 0,
@@ -97,6 +93,8 @@ function analytics(out) {
   out('social media: Spotify............. ' + tot(stats.with_spotify_id) + per(stats.with_spotify_id));
   out('social media: Twitter............. ' + tot(stats.with_twitter_id) + per(stats.with_twitter_id));
   out('social media: Youtube............. ' + tot(stats.with_youtube_channel) + per(stats.with_youtube_channel));
+  out('---------------------------------------------------------');
+  out(genres);
 }
 
 function transform(datum) {
@@ -182,54 +180,13 @@ function transform(datum) {
   }
 }
 
-function getFeaturedTrack(profile) {
-  function req(url) {
-    return new Promise((yes, no) => {
-      let apiurl = url + '?' + qs.stringify(params);
-      trace(apiurl);
-      request.get(apiurl, function (err, res, body) {
-        if (err) return no(err);
-        yes(res);
-      });
-    });
-  }
-
-  let params = { client_id : SCID, order_by : 'favoritings_count', limit : 1 };
-  let userId = profile.soundcloud_id;
-
-  // Ignore if no soundcloudID
-  if (!userId) {
-    profile.featured_track = '';
-    return Promise.resolve(profile);
-  }
-
-  return req('https://api.soundcloud.com/users/' + userId + '/tracks')
-    .then((res) => {
-      let tracks = JSON.parse(res.body);
-
-      profile.featured_track = '';
-
-      if (!Array.isArray(tracks)) {
-        return Promise.resolve(profile);
-      }
-
-      let featured = tracks.shift();
-
-      if (featured) {
-        profile.featured_track = featured.id;
-        stats.with_featured_track++;
-      }
-
-      return Promise.resolve(profile);
-    });
-}
-
-cli.withStdinLines((lines, nl) => {
-  let self  = this;
+//*****************************************************************************
+// Main routine to parse CSV and convert them to JSON 
+//*****************************************************************************
+function main(csv) {
   let collection = [];
 
-  lines.shift();
-
+  // Parse a line of CSV and return a JSON
   function parse(data) {
     return new Promise((yes, no) => {
       parser(data, (err, res) => {
@@ -237,34 +194,26 @@ cli.withStdinLines((lines, nl) => {
         yes(res);
       });
     });
-  }
+  }  
 
-  lines.forEach((line) => collection.push(parse(line)));
+  // Create a collection of promises, each element which contains a promisified
+  // parser to convert a line of CSV to a JSON object
+  csv.forEach((line) => collection.push(parse(line)));
 
   Promise.all(collection).then((parsed) => {
     return parsed.map((d) => metric(transform(d.shift()))).filter((e) => (e !== null));
   }).then((res) => {
-    // Find the soundcloud ID for each profile
-    let profiles = [];
-
-    return co(function *() {
-      for (let profile of res) {
-        try {
-          let completed = yield getFeaturedTrack(profile);
-          profiles.push(completed);
-        } catch (err) {
-          error(err);
-        }
-      }
-
-      return profiles;
-    });
-  }).then((res) => {
-    // Output the results to STDOUT and the metrics to STDERR
-    console.log(JSON.stringify(res, null, 2));
-    analytics(console.error);
+    stdout(JSON.stringify(res, null, 2));
+    analytics(stderr);
   }).catch((err) => {
-    error(err);
+    stderr(err);
     process.exit(1);
   });
+}
+
+//*****************************************************************************
+// CLI handling
+//*****************************************************************************
+cli.withStdinLines((lines, nl) => {
+  main(lines);
 });
