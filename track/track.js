@@ -48,7 +48,6 @@ function getFeaturedTrack(profile) {
 
       if (featured) {
         profile.featured_track = featured.id;
-        stats.with_featured_track++;
       }
 
       return Promise.resolve(profile);
@@ -67,8 +66,7 @@ function main(profiles) {
       try {
         let completed = yield getFeaturedTrack(profile);
         collection.push(completed);
-
-        stderr('Completed ' + profile.name + '... [v]');
+        stderr(`Completed ${profile.name} -> ${profile.featured_track}`);
       } catch (err) {
         error('Skipped ' + profile.name + '... [.]');
         error(err);

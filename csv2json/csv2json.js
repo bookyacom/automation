@@ -31,7 +31,6 @@ let stats = {
   with_spotify_id : 0,
   with_twitter_id : 0,
   with_youtube_channel : 0,
-  with_featured_track : 0,
   genres : {}
 };
 
@@ -77,7 +76,6 @@ function analytics(out) {
   out('complete for recommendation page.. ' + tot(stats.with_short_info) + per(stats.with_short_info));
   out('complete for featured page........ ' + tot(stats.with_mini_info) + per(stats.with_mini_info));
   out('with contact information.......... ' + tot(stats.with_contact_info) + per(stats.with_contact_info));
-  out('with featured track............... ' + tot(stats.with_featured_track) + per(stats.with_featured_track));
   out('---------------------------------------------------------');
   out('social media: BandsInTown......... ' + tot(stats.with_bandsintown) + per(stats.with_bandsintown));
   out('social media: Beatport DJ......... ' + tot(stats.with_beatport_dj) + per(stats.with_beatport_dj));
