@@ -30,8 +30,7 @@ let stats = {
   with_soundlcoud_id : 0,
   with_spotify_id : 0,
   with_twitter_id : 0,
-  with_youtube_channel : 0,
-  genres : {}
+  with_youtube_channel : 0
 };
 
 function metric(p) {
@@ -91,8 +90,6 @@ function analytics(out) {
   out('social media: Spotify............. ' + tot(stats.with_spotify_id) + per(stats.with_spotify_id));
   out('social media: Twitter............. ' + tot(stats.with_twitter_id) + per(stats.with_twitter_id));
   out('social media: Youtube............. ' + tot(stats.with_youtube_channel) + per(stats.with_youtube_channel));
-  out('---------------------------------------------------------');
-  out(genres);
 }
 
 function transform(datum) {
@@ -164,12 +161,7 @@ function transform(datum) {
       youtube_channel : datum[54]
     };
 
-    // Add genres to the genre list
-    let genres = datum[6].split(',').map((e) => { return e.trim().toLowerCase(); });
-    
-    genres.forEach(function (genre) {
-      stats.genres[genre] = true;
-    });
+    stderr(`Done with ${p.name}`);
 
     return p;
   } catch (err) {
@@ -188,11 +180,14 @@ function main(csv) {
   function parse(data) {
     return new Promise((yes, no) => {
       parser(data, (err, res) => {
-        if (err) return no(err);
+        if (err) {
+          stderr(data);
+          return no(err);
+        }
         yes(res);
       });
     });
-  }  
+  }
 
   // Create a collection of promises, each element which contains a promisified
   // parser to convert a line of CSV to a JSON object
