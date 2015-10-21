@@ -1,8 +1,9 @@
 'use strict';
 
-import co    from 'co';
-import cli   from 'cli';
-import debug from 'debug';
+import co      from 'co';
+import cli     from 'cli';
+import debug   from 'debug';
+import cleanup from './cleanup';
 
 const stdout = console.log;
 const stderr = console.error;
@@ -11,12 +12,28 @@ const error  = debug('automation:genre:error');
 
 let genreCheck = {};
 
-function analyse(profile) {
+function fix(profile) {
   let genres = profile.genres.split(',');
-
+  let top    = Object.keys(cleanup);
+  let fixed  = new Set();
+  
   for (let genre of genres) {
-    genreCheck[genre.trim().toLowerCase()] = true;
+    genre = genre.trim().toLowerCase();
+    let scheme = cleanup[top[top.indexOf(genre)]];
+
+    if (scheme === undefined || scheme === null) {
+      trace('Skipped ' + genre);
+      continue;
+    }
+
+    for (let genre of Object.keys(scheme)) {
+      fixed = fixed.add(genre);
+    }
   }
+
+  profile.genres = Array.from(fixed); // convert to plain array and assign to profile
+
+  return profile;
 }
 
 //*****************************************************************************
@@ -31,13 +48,17 @@ function main(profiles) {
   }
 
   profiles.forEach((profile) => {
-    analyse(profile);
+    let genres = profile.genres;
+    fix(profile);
+
+    if (profile.genres.length > 0) {
+      stderr(`Changed ${genres} --------> ${profile.genres.join(', ')}`);
+    } else {
+      stderr(`Skipped ${profile.name} with genre: (${genres})`);
+    }
   });
 
-  // Sort the genres alphabetically
-  let sorted = Object.keys(genreCheck).sort();
-
-  stdout(sorted);
+  stdout(JSON.stringify(profiles, null, 2));
 }
 
 //*****************************************************************************
