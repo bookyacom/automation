@@ -3,6 +3,8 @@
 import db from '../connection';
 
 export let create = function(value) {
+  value = value.trim();
+
   return db
     .update('Genre')
     .set({
@@ -28,7 +30,6 @@ export let parseGenre = function(genres) {
 
 export let createAll = function *({ genres }) {
   let results = [];
-  genres = this.parseGenre(genres);
 
   for (let genre of genres) {
     let created = yield this.create(genre);
