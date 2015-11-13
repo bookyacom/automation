@@ -15,7 +15,7 @@ export let createArtist = function(artist) {
     email_manager: manager_email,
     territories,
     based_in,
-    artist_bio,
+    // artist_bio,
     websites: website_list,
     other_names,
     agent_list,
@@ -62,7 +62,7 @@ export let createArtist = function(artist) {
           full_name     : name,
           display_name  : name,
           agent_list, genre_list, email, management, manager_email, territories,
-          artist_bio, website_list, other_names, nationality, based_in,
+          website_list, other_names, nationality, based_in,
           featured_track
         })
         .set(`profile_photo=$profileImage[0]`)
