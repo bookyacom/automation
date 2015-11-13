@@ -28,6 +28,17 @@ export let createArtist = function(artist) {
 
   assert(name && profile_photo && cover_photo, `${name}, ${profile_photo}, ${cover_photo}, should have artist values`);
 
+  let setter = {
+    full_name     : name,
+    display_name  : name,
+    agent_list, genre_list, email, management, manager_email, territories,
+    website_list, other_names, nationality, featured_track
+  };
+
+  if (based_in && based_in.length) {
+    setter.based_in = based_in;
+  }
+
   return db
     .let('profileImage', (statement) => {
       let setter = {
@@ -58,13 +69,7 @@ export let createArtist = function(artist) {
     .let('artist', (statement) => {
       statement
         .update('Artist')
-        .set({
-          full_name     : name,
-          display_name  : name,
-          agent_list, genre_list, email, management, manager_email, territories,
-          website_list, other_names, nationality, based_in,
-          featured_track
-        })
+        .set(setter)
         .set(`profile_photo=$profileImage[0]`)
         .set(`cover_photo=$coverImage[0]`)
         .upsert()
