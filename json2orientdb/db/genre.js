@@ -25,13 +25,15 @@ export let create = function(value) {
 };
 
 export let parseGenre = function(genres) {
+  if (Array.isArray(genres)) return genres;
+
   return genres.split(',').map((genre) => genre.toLowerCase());
 };
 
 export let createAll = function *({ genres }) {
   let results = [];
 
-  for (let genre of genres) {
+  for (let genre of parseGenre(genres)) {
     let created = yield this.create(genre);
     if (created) results.push(created);
   }
