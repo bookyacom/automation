@@ -115,14 +115,14 @@ function transform(datum) {
       real_name_10 : datum[18],
       real_name_11 : datum[19],
       real_name_12 : datum[20],
-      management : datum[21],
-      email_manager : datum[22],
+      management : datum[21] || datum[56],
+      email_manager : datum[22] || datum[55],
       territories : datum[23],
       agency : {
         global : {
-          name : datum[24],
-          agent : datum[25],
-          email : datum[26],
+          name : datum[24] || datum[60],
+          agent : datum[25] || datum[60],
+          email : datum[26] || datum[61],
           number : datum[27],
           territories : datum[28]
         },
@@ -142,7 +142,7 @@ function transform(datum) {
           number : datum[37],
         }
       },
-      direct_email : datum[38],
+      direct_email : datum[38] || datum[57],
       record_labels : datum[39],
       bandsintown : datum[40],
       soundcloud_featured : datum[41],
@@ -158,7 +158,10 @@ function transform(datum) {
       soundcloud_id : datum[51],
       spotify_id : datum[52],
       twitter_id : datum[53],
-      youtube_channel : datum[54]
+      youtube_channel : datum[54],
+
+      // Additional stuff from KL
+      press_contact : datum[58]
     };
 
     stderr(`Done with ${p.name}`);
