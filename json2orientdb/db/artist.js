@@ -21,21 +21,23 @@ export let createArtist = function(artist) {
     agent_list,
     genre_list,
     record_labels,
-    featured_track
+    featured_track,
+    bookya_url
   } = artist;
 
   if (!cover_photo) cover_photo = profile_photo;
 
-  assert(name && profile_photo && cover_photo, `${name}, ${profile_photo}, ${cover_photo}, should have artist values`);
+  assert(name && profile_photo && cover_photo && bookya_url, `${name}, ${profile_photo}, ${cover_photo}, should have artist values`);
 
   let setter = {
     full_name     : name,
     display_name  : name,
     agent_list, genre_list, email, management, manager_email, territories,
-    website_list, other_names, nationality, featured_track
+    website_list, other_names, nationality, featured_track,
+    bookya_url
   };
 
-  if (based_in && based_in.length) {
+  if (based_in) {
     setter.based_in = based_in;
   }
 
@@ -87,3 +89,29 @@ export let createArtist = function(artist) {
       return artist;
     });
 }
+
+export let checkBookyaUrl = function *({ name }) {
+  assert(name);
+
+  let url   = name.toLowerCase().trim().replace(/ /g, '-');
+  let count = 1;
+  let notFound = true;
+  while(notFound) {
+    yield db
+      .select('count(*)')
+      .from('artist')
+      .where({
+        bookya_url: url
+      })
+      .scalar()
+      .then(function(count) {
+        if (!count) {
+          notFound = false;
+        } else {
+          url = url.concat('-' + count);
+        }
+      });
+  }
+
+  return url;
+};

@@ -19,7 +19,6 @@ export default function(address) {
   return new Promise(function(resolve, reject) {
     count++;
     geocoder.geocode(address, function(err, result) {
-      console.log(err);
       if (err) return resolve(null);
       if (!result || !result.length) {
         return resolve(null);

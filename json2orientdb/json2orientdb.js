@@ -10,7 +10,7 @@ import * as genreModel  from './db/genre';
 import * as ownModel    from './db/own';
 import * as artistModel from './db/artist';
 import locationModel    from './db/location';
-import getLocation      from './location'
+import getLocation      from './location';
 
 /*
   create genres
@@ -21,6 +21,8 @@ import getLocation      from './location'
   create own
  */
 let count = 0;
+let locationList = {};
+
 cli.withStdin((lines, nl) => {
   let artists = JSON.parse(lines);
   let count   = 0;
@@ -35,6 +37,8 @@ cli.withStdin((lines, nl) => {
         artist.based_in   = locationId;
         artist.agent_list = agents;
         artist.genre_list = genres;
+
+        console.log(artist.based_in);
 
         let artistId      = yield parseArtist(artist);
         let socials       = yield getSocialMedia(artist);
@@ -57,15 +61,22 @@ cli.withStdin((lines, nl) => {
 });
 
 const createLocation = function *({ based_in }) {
-  let address = yield getLocation(based_in);
-  if (address) {
-    try {
-      return yield locationModel.createBasedLocation(address);
-    } catch (e) {
-      return "";
+  let code = locationList[based_in];
+
+  if (!code) {
+    let address = yield getLocation(based_in);
+    if (address) {
+      try {
+        let id = yield locationModel.createBasedLocation(address);
+        locationList[based_in] = id;
+        return id;
+      } catch (e) {
+        return 0;
+      }
     }
+    return 0;
   }
-  return "";
+  return code;
 };
 
 const getSocialMedia = function *(artist) {
@@ -85,6 +96,14 @@ const getSocialMedia = function *(artist) {
       }
     }
 
+    if (key === 'youtube_channel') {
+      let reg   = new RegExp(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w)*#!\/)?(?:channel\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/g);
+      let values = reg.exec(value);
+      if (values && values.length) {
+        value = values.pop();
+      }
+    }
+
     if (value && value.replace(testNonAlphaNumeric, '')) {
       key = key.replace('_id', '');
       let social = yield metricModel.createSocialMetric(key, value);
@@ -97,6 +116,7 @@ const getSocialMedia = function *(artist) {
 
 const parseArtist = function *(artist) {
   artist.other_names = getOtherNames(artist);
+  artist.bookya_url  = yield artistModel.checkBookyaUrl(artist);
   return yield artistModel.createArtist(artist);
 };
 
