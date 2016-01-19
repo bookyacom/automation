@@ -25,7 +25,11 @@ export let create = function(value) {
 };
 
 export let parseGenre = function(genres) {
-  if (Array.isArray(genres)) return genres;
+  if (Array.isArray(genres)) {
+    return genres.map(function(genre) {
+      return genre.toLowerCase();
+    });
+  }
 
   return genres.split(',').map((genre) => genre.toLowerCase());
 };
