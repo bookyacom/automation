@@ -42,19 +42,34 @@ export let createArtist = function(artist) {
   }
 
   return db
-    .let('profileImage', (statement) => {
-      let setter = {
-        value : profile_photo,
-        type  : 'profile'
-      };
-
-      statement
-        .update('media')
-        .set(setter)
-        .upsert()
-        .return('AFTER')
-        .where(setter);
+    .update('Artist')
+    .set(setter)
+    .upsert()
+    .return('AFTER')
+    .where({
+      full_name    : name,
+      display_name : name
     })
+    .one()
+    .then((artist) => {
+      // if (artist) return artist['@rid'];
+      return artist;
+    });
+}
+
+export let checkMediaUrl = function(value) {
+  return db
+    .select('count(*)')
+    .from('media')
+    .where(`value LIKE '%${value}%'`)
+    .scalar()
+    .then(count => count > 0);
+};
+
+export let updateCoverPhoto = function(id, cover_photo) {
+  assert(id);
+
+  return db
     .let('coverImage', (statement) => {
       let setter = {
         value : cover_photo,
@@ -68,27 +83,50 @@ export let createArtist = function(artist) {
         .return('AFTER')
         .where(setter);
     })
-    .let('artist', (statement) => {
+    .let('updateArtist', (statement) => {
       statement
         .update('Artist')
-        .set(setter)
-        .set(`profile_photo=$profileImage[0]`)
         .set(`cover_photo=$coverImage[0]`)
-        .upsert()
-        .return('AFTER')
         .where({
-          full_name    : name,
-          display_name : name
-        });
+          '@rid': id
+        })
+        .return('AFTER');
     })
     .commit()
-    .return('$artist')
-    .one()
-    .then((artist) => {
-      if (artist) return artist['@rid'];
-      return artist;
-    });
-}
+    .return('$updateArtist')
+    .one();
+};
+
+export let updateProfilePhoto = function(id, profile_photo) {
+  assert(id);
+
+  return db
+    .let('profileImage', (statement) => {
+      let setter = {
+        value : profile_photo,
+        type  : 'profile'
+      };
+
+      statement
+        .update('media')
+        .set(setter)
+        .upsert()
+        .return('AFTER')
+        .where(setter);
+    })
+    .let('updateArtist', (statement) => {
+      statement
+        .update('Artist')
+        .set(`profile_photo=$profileImage[0]`)
+        .where({
+          '@rid': id
+        })
+        .return('AFTER');
+    })
+    .commit()
+    .return('$updateArtist')
+    .one();
+};
 
 export let checkBookyaUrl = function *({ name }) {
   assert(name);
@@ -109,6 +147,7 @@ export let checkBookyaUrl = function *({ name }) {
           notFound = false;
         } else {
           url = url.concat('-' + count);
+          count++;
         }
       });
   }
