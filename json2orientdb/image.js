@@ -1,10 +1,8 @@
 'use strict';
 
-import aws from 'aws-sdk';
-import fileType from 'file-type';
 import uuid from 'uuid';
 import assert from 'assert';
-import got from 'got';
+import tos3 from 'tos3';
 
 export const uploader = function() {
   const config = {
@@ -15,35 +13,12 @@ export const uploader = function() {
     URL          : 'https://bookya-storage.s3.amazonaws.com/'
   };
 
-  aws.config.update({
-    accessKeyId: config.ACCESS_KEY,
-    secretAccessKey: config.SECRET_KEY
-  });
-
-  const s3 = new aws.S3();
+  const uploader = tos3(config);
 
   return function(url, name) {
     assert(url && name);
 
-    return new Promise(function(resolve, reject) {
-      got(url, {encoding: null})
-        .then(res => {
-          let chuck = res.body;
-          let type = fileType(new Buffer(chuck));
-
-          s3.upload({
-            Bucket: config.BUCKET,
-            Key: name,
-            Body: chuck,
-            ContentType: type.mime,
-            ACL: config.ACL
-          }, function(err, data) {
-            if (err) return reject(err);
-            resolve(data.Location);
-          });
-        })
-        .catch(reject);
-    });
+    return uploader(url, name);
   };
 };
 

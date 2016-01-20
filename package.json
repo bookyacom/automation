@@ -19,7 +19,6 @@
   },
   "homepage": "https://github.com/bookyacom/automation#readme",
   "dependencies": {
-    "aws-sdk": "^2.2.30",
     "babel": "^5.8.23",
     "babel-core": "^5.8.23",
     "cli": "^0.9.0",
@@ -27,8 +26,6 @@
     "config": "^1.16.0",
     "csv-parse": "^1.0.0",
     "debug": "^2.2.0",
-    "file-type": "^3.4.0",
-    "got": "^6.1.0",
     "lodash.template": "^3.6.2",
     "moment": "^2.10.6",
     "moment-timezone": "^0.4.0",
@@ -40,6 +37,7 @@
     "sequelize": "^3.11.0",
     "songkick-wrapper": "^1.2.1",
     "timezoner": "^0.1.9",
+    "tos3": "^1.0.0",
     "uuid": "^2.0.1"
   }
 }
