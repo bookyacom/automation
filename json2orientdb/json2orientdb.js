@@ -11,6 +11,7 @@ import * as ownModel    from './db/own';
 import * as artistModel from './db/artist';
 import locationModel    from './db/location';
 import getLocation      from './location';
+import * as image from './image';
 
 /*
   create genres
@@ -22,8 +23,10 @@ import getLocation      from './location';
  */
 let count = 0;
 let locationList = {};
+const uploader = image.uploader();
 
 cli.withStdin((lines, nl) => {
+  console.log(lines);
   let artists = JSON.parse(lines);
   let count   = 0;
 
@@ -40,7 +43,11 @@ cli.withStdin((lines, nl) => {
 
         console.log(artist.based_in);
 
-        let artistId      = yield parseArtist(artist);
+        let record   = yield parseArtist(artist);
+        let artistId = record['@rid'];
+
+        yield updateMedia(record, artistId, artist);
+
         let socials       = yield getSocialMedia(artist);
         if (socials.length) {
           yield ownModel.createEdge(artistId, socials);
@@ -71,6 +78,7 @@ const createLocation = function *({ based_in }) {
         locationList[based_in] = id;
         return id;
       } catch (e) {
+        console.error(e);
         return 0;
       }
     }
@@ -112,6 +120,29 @@ const getSocialMedia = function *(artist) {
   }
 
   return socialmetric_list;
+};
+
+const updateMedia = function *(record, id, artist) {
+  function *checkAndUpload(url) {
+    let name = image.generateFileName();
+    let contain = true;
+    while (contain) {
+      contain = yield artistModel.checkMediaUrl(name);
+    }
+    return uploader(url, name);
+  }
+
+  if (!record.profile_photo) {
+    let url = yield checkAndUpload(artist.profile_photo);
+    yield artistModel.updateProfilePhoto(id, url);
+  }
+
+  if (!record.cover_photo) {
+    artist.cover_photo = artist.cover_photo || artist.profile_photo;
+
+    let url = yield checkAndUpload(artist.cover_photo);
+    yield artistModel.updateCoverPhoto(id, url);
+  }
 };
 
 const parseArtist = function *(artist) {
