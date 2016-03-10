@@ -3,17 +3,12 @@
 import uuid from 'uuid';
 import assert from 'assert';
 import tos3 from 'tos3';
+import config from 'config';
 
 export const uploader = function() {
-  const config = {
-    ACCESS_KEY   : process.env.AWS_ACCESS_KEY || 'AKIAIPLWSNRY2EJCGAYA',
-    SECRET_KEY   : process.env.AWS_SECRET_KEY || '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' ,
-    BUCKET       : process.env.S3_BUCKET      || 'bookya-storage',
-    ACL          : 'public-read',
-    URL          : 'https://bookya-storage.s3.amazonaws.com/'
-  };
+  const cfg = config.AWS;
 
-  const uploader = tos3(config);
+  const uploader = tos3(cfg);
 
   return function(url, name) {
     assert(url && name);

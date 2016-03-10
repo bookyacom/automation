@@ -23,5 +23,13 @@ export default {
     'AIzaSyBh_74EEhRH4iR9kIRJgGE9lT8bdijxTac',
     'AIzaSyCf2m013zJMvOajC0MMCta4chr9bGyLsls',
     'AIzaSyADK2U4peckf-oxXM2ru6lmebQgc48mL5c'
-  ]
+  ],
+
+  AWS: {
+    ACCESS_KEY   : process.env.AWS_ACCESS_KEY || 'AKIAIPLWSNRY2EJCGAYA',
+    SECRET_KEY   : process.env.AWS_SECRET_KEY || '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',
+    BUCKET       : process.env.S3_BUCKET      || 'bookya-storage',
+    ACL          : 'public-read',
+    URL          : 'https://bookya-storage.s3.amazonaws.com/'
+  }
 }
