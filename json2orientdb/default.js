@@ -1,6 +1,6 @@
 'use strict';
 
-export default {
+module.exports = {
   ORIENTDB: {
     HOST: process.env.DB_HOST || '127.0.0.1',
     PORT: process.env.DB_PORT || 2424,
