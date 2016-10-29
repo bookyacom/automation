@@ -26,13 +26,12 @@ let locationList = {};
 const uploader = image.uploader();
 
 cli.withStdin((lines, nl) => {
-  console.log(lines);
   let artists = JSON.parse(lines);
   let count   = 0;
 
   co(function *() {
     for (let artist of artists) {
-      if (artist.genres && artist.profile_photo) {
+      if (artist.genres) {
         let genres     = yield genreModel.createAll(artist);
         let agents     = yield agentModel.getAgency(artist);
         let locationId = yield createLocation(artist);
@@ -132,12 +131,12 @@ const updateMedia = function *(record, id, artist) {
     return uploader(url, name);
   }
 
-  if (!record.profile_photo) {
+  if (!record.profile_photo && artist.profile_photo) {
     let url = yield checkAndUpload(artist.profile_photo);
     yield artistModel.updateProfilePhoto(id, url);
   }
 
-  if (!record.cover_photo) {
+  if (!record.cover_photo && artist.cover_photo) {
     artist.cover_photo = artist.cover_photo || artist.profile_photo;
 
     let url = yield checkAndUpload(artist.cover_photo);

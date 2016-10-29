@@ -3,6 +3,7 @@
 import debug  from 'debug';
 import parser from 'csv-parse';
 import cli    from 'cli';
+import config from './config';
 
 const trace  = debug('automation:csv2json:trace');
 const error  = debug('automation:csv2json:error');
@@ -34,11 +35,15 @@ let stats = {
 };
 
 function metric(p) {
+  if (!p) {
+    return p;
+  }
+  
   stats.total_profiles++
 
   (p.profile_photo) ? stats.with_profile_photo++ : null;
   (p.cover_photo) ? stats.with_cover_photo++ : null;
-  (p.profile_photo && p.name && p.genres) ? stats.with_short_info++ : null; 
+  (p.profile_photo && p.name && p.genres) ? stats.with_short_info++ : null;
   (p.profile_photo && p.name) ? stats.with_mini_info++ : null;
   (p.email_manager || p.agency.global.email || p.agency.europe.email || p.agency.usa.email || p.direct_email) ? stats.with_contact_info++ : null;
   (p.bandsintown) ? stats.with_bandsintown++ : null;
@@ -95,29 +100,19 @@ function analytics(out) {
 function transform(datum) {
   try {
     let p = {
-      name : datum[1],
-      profile_photo : datum[2],
-      cover_photo : datum[3],
-      artist_bio : datum[4],
-      websites : datum[5],
-      genres : datum[6],
-      based_in : datum[7],
-      nationality : datum[8],
-      real_name_1 : datum[9],
-      real_name_2 : datum[10],
-      real_name_3 : datum[11],
-      real_name_4 : datum[12],
-      real_name_5 : datum[13],
-      real_name_6 : datum[14],
-      real_name_7 : datum[15],
-      real_name_8 : datum[16],
-      real_name_9 : datum[17],
-      real_name_10 : datum[18],
-      real_name_11 : datum[19],
-      real_name_12 : datum[20],
-      management : datum[21] || datum[56],
-      email_manager : datum[22] || datum[55],
-      territories : datum[23],
+      name : datum[config.NAME],
+      profile_photo : datum[config.PROFILE_PHOTO],
+      cover_photo : datum[config.COVER_PHOTO],
+      artist_bio : datum[config.BIO],
+      websites : datum[config.WEBSITE],
+      genres : datum[config.GENRES],
+      based_in : datum[config.BASED_IN],
+      nationality : datum[config.NATIONALITY],
+      real_name_1 : datum[config.REAL_NAME || config.NAME],
+      management : datum[config.MANAGEMENT],
+      email_manager : datum[config.EMAIL_MANAGER || config.EMAIL],
+      territories : datum[config.TERRITORIES],
+      has_profile: datum[config.BOOKYA_PROFILE] === 'Yes',
       agency : {
         global : {
           name : datum[24] || datum[60],
@@ -142,26 +137,26 @@ function transform(datum) {
           number : datum[37],
         }
       },
-      direct_email : datum[38] || datum[57],
-      record_labels : datum[39],
-      bandsintown : datum[40],
-      soundcloud_featured : datum[41],
-      beatport_dj_id : datum[42],
-      beatport_pro_id : datum[43],
-      facebook_page : datum[44],
-      instagram_id : datum[45],
-      itunes_id : datum[46],
-      lastfm_id : datum[47],
-      mixcloud_id : datum[48],
-      partyflock : datum[49],
-      songkick_id : datum[50],
-      soundcloud_id : datum[51],
-      spotify_id : datum[52],
-      twitter_id : datum[53],
-      youtube_channel : datum[54],
+      direct_email : datum[config.EMAIL],
+      record_labels : datum[config.RECORD_LABELS],
+      bandsintown : datum[config.BANDSINTOWN],
+      soundcloud_featured : datum[config.SOUNDCLOUD_FEATURED],
+      beatport_dj_id : datum[config.BEATPORT_DJ_ID],
+      beatport_pro_id : datum[config.BEATPORT_PRO_ID],
+      facebook_page : datum[config.FACEBOOK_PAGE],
+      instagram_id : datum[config.INSTAGRAM_ID],
+      itunes_id : datum[config.ITUNES_ID],
+      lastfm_id : datum[config.LASTFM_ID],
+      mixcloud_id : datum[config.MIXCLOUD_ID],
+      partyflock : datum[config.PARTYFLOCK],
+      songkick_id : datum[config.SONGKICK_ID],
+      soundcloud_id : datum[config.SOUNDCLOUD_ID],
+      spotify_id : datum[config.SPOTIFY_ID],
+      twitter_id : datum[config.TWITTER_ID],
+      youtube_channel : datum[config.YOUTUBE_CHANNEL],
 
       // Additional stuff from KL
-      press_contact : datum[58]
+      press_contact : datum[config.PRESS_CONTACT]
     };
 
     stderr(`Done with ${p.name}`);
@@ -174,7 +169,7 @@ function transform(datum) {
 }
 
 //*****************************************************************************
-// Main routine to parse CSV and convert them to JSON 
+// Main routine to parse CSV and convert them to JSON
 //*****************************************************************************
 function main(csv) {
   let collection = [];
