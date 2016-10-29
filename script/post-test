@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+'use strict';
+
+const orientjs = require('orientjs');
+
+const USER = process.env.ROOT_USERNAME;
+const PWD  = process.env.ROOT_PASSWORD;
+const DB   = 'bookya-test-1';
+
+const server = orientjs({
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  username: USER,
+  password: PWD
+});
+
+// drop db
+server.drop({
+  name: DB,
+  storage: 'plocal'
+})
+.then(process.exit.bind(process, 0))
+.catch(process.exit.bind(process, 1));
