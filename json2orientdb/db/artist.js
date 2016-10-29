@@ -15,7 +15,7 @@ export let createArtist = function(artist) {
     email_manager: manager_email,
     territories,
     based_in,
-    // artist_bio,
+    artist_bio,
     websites: website_list,
     other_names,
     agent_list,
@@ -27,14 +27,16 @@ export let createArtist = function(artist) {
 
   if (!cover_photo) cover_photo = profile_photo;
 
-  assert(name && profile_photo && cover_photo && bookya_url, `${name}, ${profile_photo}, ${cover_photo}, should have artist values`);
+  assert(name && bookya_url, `${name}, ${profile_photo}, ${cover_photo}, should have artist values`);
 
   let setter = {
     full_name     : name,
     display_name  : name,
     agent_list, genre_list, email, management, manager_email, territories,
     website_list, other_names, nationality, featured_track,
-    bookya_url
+    bookya_url,
+    artist_bio,
+    record_labels
   };
 
   if (based_in) {

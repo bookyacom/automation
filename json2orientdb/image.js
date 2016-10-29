@@ -7,6 +7,7 @@ import config from 'config';
 
 export const uploader = function() {
   const cfg = config.AWS;
+  console.log(cfg);
 
   const uploader = tos3(cfg);
 
