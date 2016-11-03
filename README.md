@@ -1,4 +1,5 @@
-# automation [![Dependency Status](https://gemnasium.com/badges/7551f97ce68eaae1eaea1bdf13d02df3.svg)](https://gemnasium.com/github.com/bookyacom/widget)
+# automation [![Dependency Status](https://gemnasium.com/badges/4fb0d3a6d4a883ba5ba81cb7aed21741.svg)](https://gemnasium.com/github.com/bookyacom/automation)
+
 Automated scripts repository
 
 ## Modules
