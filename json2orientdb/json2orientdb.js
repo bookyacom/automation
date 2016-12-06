@@ -42,7 +42,7 @@ cli.withStdin((lines, nl) => {
 
         console.log(artist.based_in);
 
-        let record   = yield parseArtist(artist);
+        let record   = yield parseAgency(artist);
         let artistId = record['@rid'];
 
         yield updateMedia(record, artistId, artist);
@@ -149,6 +149,12 @@ const parseArtist = function *(artist) {
   artist.bookya_url  = yield artistModel.checkBookyaUrl(artist);
   return yield artistModel.createArtist(artist);
 };
+
+const parseAgency = function *(record) {
+  record.other_names = getOtherNames(record);
+  record.bookya_url = yield agentModel.checkBookyaUrl(record);
+  return yield agentModel.createAgency(record);
+}
 
 const getOtherNames = function(artist) {
   let key   = 'real_name_';

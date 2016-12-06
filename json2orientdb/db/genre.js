@@ -28,9 +28,7 @@ export let find = (value) => {
   return db
     .select()
     .from('Genre')
-    .where({
-      value
-    })
+    .where(`value.toLowerCase() = "${value}"`)
     .one()
     .then(function(genre) {
       if (genre) {
