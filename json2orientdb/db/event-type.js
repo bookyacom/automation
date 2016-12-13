@@ -2,11 +2,13 @@
 
 import db from '../connection';
 
+const TABLE_NAME = 'eventtype';
+
 export let create = function(value) {
   value = value.trim();
 
   return db
-    .update('Genre')
+    .update(TABLE_NAME)
     .set({
       value
     })
@@ -16,18 +18,18 @@ export let create = function(value) {
       value
     })
     .one()
-    .then(function(genre) {
-      if (genre) {
-        return genre['@rid'];
+    .then(function(type) {
+      if (type) {
+        return type['@rid'];
       }
-      return genre;
+      return type;
     });
 };
 
 export let find = (value) => {
   return db
     .select()
-    .from('Genre')
+    .from(TABLE_NAME)
     .where(`value.toLowerCase() = "${value}"`)
     .one()
     .then(function(genre) {
@@ -38,21 +40,21 @@ export let find = (value) => {
     });
 };
 
-export let parseGenre = function(genres) {
-  if (Array.isArray(genres)) {
-    return genres.map(function(genre) {
-      return genre.toLowerCase();
+export let parseTypes = function(types) {
+  if (Array.isArray(types)) {
+    return types.map(function(type) {
+      return type.toLowerCase();
     });
   }
 
-  return genres.split(',').map((genre) => genre.trim().toLowerCase());
+  return types.split(',').map((type) => type.trim().toLowerCase());
 };
 
-export let createAll = function *({ genres }) {
+export let createAll = function *({ event_type_list: types }) {
   let results = [];
 
-  for (let genre of parseGenre(genres)) {
-    let created = yield this.find(genre);
+  for (let type of parseTypes(types)) {
+    let created = yield this.find(type);
     if (created) results.push(created);
   }
 

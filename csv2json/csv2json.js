@@ -34,11 +34,71 @@ let stats = {
   with_youtube_channel : 0
 };
 
+function getFacebookPageID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
+function getInstagramID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?instagram\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
+function getTwitterID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?twitter\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
+function getSouncloudID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?soundcloud\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
+function getYoutubeID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:(?:\w)*#!\/)?(?:channel\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
 function metric(p) {
   if (!p) {
     return p;
   }
-  
+
   stats.total_profiles++
 
   (p.profile_photo) ? stats.with_profile_photo++ : null;
@@ -99,11 +159,13 @@ function analytics(out) {
 
 function transform(datum) {
   try {
+    const contact = datum[config.CONTACT_NUMBER];
+
     let p = {
       name : datum[config.NAME],
       profile_photo : datum[config.PROFILE_PHOTO],
       cover_photo : datum[config.COVER_PHOTO],
-      artist_bio : datum[config.BIO],
+      bio : datum[config.BIO],
       websites : datum[config.WEBSITE],
       genres : datum[config.GENRES],
       based_in : datum[config.BASED_IN],
@@ -113,6 +175,8 @@ function transform(datum) {
       email_manager : datum[config.EMAIL_MANAGER || config.EMAIL],
       territories : datum[config.TERRITORIES],
       has_profile: datum[config.BOOKYA_PROFILE] === 'Yes',
+      contact_person: datum[config.CONTACT_PERSON],
+      contact_number: contact ? contact.trim() : contact,
       agency : {
         global : {
           name : datum[24] || datum[60],
@@ -143,17 +207,21 @@ function transform(datum) {
       soundcloud_featured : datum[config.SOUNDCLOUD_FEATURED],
       beatport_dj_id : datum[config.BEATPORT_DJ_ID],
       beatport_pro_id : datum[config.BEATPORT_PRO_ID],
-      facebook_page : datum[config.FACEBOOK_PAGE],
-      instagram_id : datum[config.INSTAGRAM_ID],
+      facebook_page : getFacebookPageID(datum[config.FACEBOOK_PAGE]),
+      instagram_id : getInstagramID(datum[config.INSTAGRAM_ID]),
       itunes_id : datum[config.ITUNES_ID],
       lastfm_id : datum[config.LASTFM_ID],
       mixcloud_id : datum[config.MIXCLOUD_ID],
       partyflock : datum[config.PARTYFLOCK],
       songkick_id : datum[config.SONGKICK_ID],
-      soundcloud_id : datum[config.SOUNDCLOUD_ID],
+      soundcloud_id : getSouncloudID(datum[config.SOUNDCLOUD_ID]),
       spotify_id : datum[config.SPOTIFY_ID],
-      twitter_id : datum[config.TWITTER_ID],
-      youtube_channel : datum[config.YOUTUBE_CHANNEL],
+      twitter_id : getTwitterID(datum[config.TWITTER_ID]),
+      youtube_channel : getYoutubeID(datum[config.YOUTUBE_CHANNEL]),
+      event_type_list : datum[config.EVENT_TYPE_LIST],
+      event_location_list: datum[config.EVENT_LOCATION_LIST],
+      concept_list: datum[config.CONCEPT_LIST],
+      significant_booking_list: datum[config.SIGNIFICANT_BOOKING_LIST],
 
       // Additional stuff from KL
       press_contact : datum[config.PRESS_CONTACT]
