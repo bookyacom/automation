@@ -12,6 +12,8 @@ import * as artistModel from './db/artist';
 import locationModel    from './db/location';
 import getLocation      from './location';
 import * as image from './image';
+import * as promoterModel from './db/promoter';
+import * as eventTypeModel from './db/event-type';
 
 /*
   create genres
@@ -32,22 +34,24 @@ cli.withStdin((lines, nl) => {
   co(function *() {
     for (let artist of artists) {
       if (artist.genres) {
-        let genres     = yield genreModel.createAll(artist);
-        let agents     = yield agentModel.getAgency(artist);
+        let genres = yield genreModel.createAll(artist);
+        // let agents     = yield agentModel.getAgency(artist);
         let locationId = yield createLocation(artist);
+        let locationIds = yield createEventLocation(artist);
 
         artist.based_in   = locationId;
-        artist.agent_list = agents;
+        // artist.agent_list = agents;
         artist.genre_list = genres;
+        artist.event_location_list = locationIds;
 
         console.log(artist.based_in);
 
-        let record   = yield parseAgency(artist);
+        let record   = yield parsePromoter(artist);
         let artistId = record['@rid'];
 
-        yield updateMedia(record, artistId, artist);
+        yield updatePromoterMedia(record, artistId, artist);
 
-        let socials       = yield getSocialMedia(artist);
+        let socials = yield getSocialMedia(artist);
         if (socials.length) {
           yield ownModel.createEdge(artistId, socials);
         }
@@ -84,6 +88,18 @@ const createLocation = function *({ based_in }) {
     return 0;
   }
   return code;
+};
+
+const createEventLocation = function *({ event_location_list='' }) {
+  let results = [];
+  let locations = event_location_list.split(',').map(x => x.trim());
+
+  for (let location of locations) {
+    const code = yield createLocation({based_in: location});
+    results.push(code);
+  }
+
+  return results;
 };
 
 const getSocialMedia = function *(artist) {
@@ -128,19 +144,62 @@ const updateMedia = function *(record, id, artist) {
     while (contain) {
       contain = yield artistModel.checkMediaUrl(name);
     }
-    return uploader(url, name);
+    try {
+      return uploader(url, name);
+    } catch (e) {
+      return null;
+    }
   }
 
   if (!record.profile_photo && artist.profile_photo) {
     let url = yield checkAndUpload(artist.profile_photo);
-    yield artistModel.updateProfilePhoto(id, url);
+    if (url) {
+      yield artistModel.updateProfilePhoto(id, url);
+    }
   }
 
   if (!record.cover_photo && artist.cover_photo) {
     artist.cover_photo = artist.cover_photo || artist.profile_photo;
 
     let url = yield checkAndUpload(artist.cover_photo);
-    yield artistModel.updateCoverPhoto(id, url);
+    if (url) {
+      yield artistModel.updateCoverPhoto(id, url);
+    }
+  }
+};
+
+const updatePromoterMedia = function *(record, id, promoter) {
+  function *checkAndUpload(url) {
+    let name = image.generateFileName();
+    let contain = true;
+    while (contain) {
+      contain = yield artistModel.checkMediaUrl(name);
+    }
+    let result = null
+    try {
+      result = yield uploader(url, name);
+    } catch (e) {
+      console.log("here");
+      console.log(e);
+    }
+
+    return result;
+  }
+
+  if (!record.profile_photo && promoter.profile_photo) {
+    let url = yield checkAndUpload(promoter.profile_photo);
+    if (url) {
+      yield promoterModel.updateProfilePhoto(id, url);
+    }
+  }
+
+  if (!record.cover_photo && promoter.cover_photo) {
+    promoter.cover_photo = promoter.cover_photo || promoter.profile_photo;
+
+    let url = yield checkAndUpload(promoter.cover_photo);
+    if (url) {
+      yield promoterModel.updateCoverPhoto(id, url);
+    }
   }
 };
 
@@ -154,6 +213,13 @@ const parseAgency = function *(record) {
   record.other_names = getOtherNames(record);
   record.bookya_url = yield agentModel.checkBookyaUrl(record);
   return yield agentModel.createAgency(record);
+}
+
+const parsePromoter = function *(record) {
+  record.event_type_list = yield eventTypeModel.createAll(record);
+  record.other_names = getOtherNames(record);
+  record.bookya_url = yield promoterModel.checkBookyaUrl(record);
+  return yield promoterModel.createPromoter(record);
 }
 
 const getOtherNames = function(artist) {

@@ -218,6 +218,10 @@ function transform(datum) {
       spotify_id : datum[config.SPOTIFY_ID],
       twitter_id : getTwitterID(datum[config.TWITTER_ID]),
       youtube_channel : getYoutubeID(datum[config.YOUTUBE_CHANNEL]),
+      event_type_list : datum[config.EVENT_TYPE_LIST],
+      event_location_list: datum[config.EVENT_LOCATION_LIST],
+      concept_list: datum[config.CONCEPT_LIST],
+      significant_booking_list: datum[config.SIGNIFICANT_BOOKING_LIST],
 
       // Additional stuff from KL
       press_contact : datum[config.PRESS_CONTACT]
