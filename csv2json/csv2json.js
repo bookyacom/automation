@@ -94,6 +94,30 @@ function getYoutubeID(val) {
   return val;
 }
 
+function getSongkickID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?songkick\.com\/(?:(?:\w)*#!\/)?(?:venues\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
+function getPartyFlockID(val) {
+  if (!val) {
+    return val;
+  }
+
+  const matches = val.match(/(?:https?:\/\/)?(?:www\.)?partyflock\.nl\/(?:(?:\w)*#!\/)?(?:location\/)?(?:[\w\-]*\/)*?(\/)?([^/?]*)/);
+  if (matches) {
+    return matches.pop();
+  }
+  return val;
+}
+
 function metric(p) {
   if (!p) {
     return p;
@@ -212,8 +236,8 @@ function transform(datum) {
       itunes_id : datum[config.ITUNES_ID],
       lastfm_id : datum[config.LASTFM_ID],
       mixcloud_id : datum[config.MIXCLOUD_ID],
-      partyflock : datum[config.PARTYFLOCK],
-      songkick_id : datum[config.SONGKICK_ID],
+      partyflock : getPartyFlockID(datum[config.PARTYFLOCK]),
+      songkick_id : getSongkickID(datum[config.SONGKICK_ID]),
       soundcloud_id : getSouncloudID(datum[config.SOUNDCLOUD_ID]),
       spotify_id : datum[config.SPOTIFY_ID],
       twitter_id : getTwitterID(datum[config.TWITTER_ID]),
@@ -223,6 +247,18 @@ function transform(datum) {
       concept_list: datum[config.CONCEPT_LIST],
       significant_booking_list: datum[config.SIGNIFICANT_BOOKING_LIST],
 
+      // venue
+      capacity: datum[config.CAPACITY],
+      type_list: datum[config.TYPE_LIST],
+      external_id: datum[config.EXTERNAL_ID],
+      performance_area_count: datum[config.PERFORMANCE_AREA_COUNT],
+      awards: {
+        dj_mag_top_100: {
+          2016: datum[config.DJ_MAG_2016],
+          2015: datum[config.DJ_MAG_2015],
+          2014: datum[config.DJ_MAG_2014]
+        }
+      },
       // Additional stuff from KL
       press_contact : datum[config.PRESS_CONTACT]
     };

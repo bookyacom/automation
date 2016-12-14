@@ -58,12 +58,20 @@ module.exports = {
     'AIzaSyCf2m013zJMvOajC0MMCta4chr9bGyLsls',
     'AIzaSyADK2U4peckf-oxXM2ru6lmebQgc48mL5c'
   ],
+  // AWS: {
+  //   ACCESS_KEY   : process.env.AWS_ACCESS_KEY || "AKIAIFAQBRGPOM7P5QMA",
+  //   SECRET_KEY   : process.env.AWS_SECRET_KEY || "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" ,
+  //   BUCKET       : process.env.S3_BUCKET      || "bookya",
+  //   EXPIRY_LIMIT : 60,
+  //   ACL    : 'public-read',
+  //   URL          : 'https://bookya.s3.amazonaws.com/'
+  // }
   AWS: {
     ACCESS_KEY   : process.env.AWS_ACCESS_KEY || "AKIAIFAQBRGPOM7P5QMA",
     SECRET_KEY   : process.env.AWS_SECRET_KEY || "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" ,
-    BUCKET       : process.env.S3_BUCKET      || "bookya",
+    BUCKET       : process.env.S3_BUCKET      || "bookya-dev",
     EXPIRY_LIMIT : 60,
     ACL    : 'public-read',
-    URL          : 'https://bookya.s3.amazonaws.com/'
+    URL          : 'https://bookya-dev.s3.amazonaws.com/'
   }
 }
