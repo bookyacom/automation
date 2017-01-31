@@ -1,6 +1,6 @@
 'use strict'
 
-require('babel/register');
+require('babel-register');
 const fs = require('fs');
 const GoogleMapsAPI = require("googlemaps");
 const _ = require('lodash')
