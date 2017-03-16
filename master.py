@@ -27,6 +27,7 @@ def initList ():
 	ws.cell(row=1, column = 20).value = "Email"
 	ws.cell(row=1, column = 21).value = "Phone number"
 	ws.cell(row=1, column = 22).value = "Address"
+	ws.cell(row=1, column = 23).value = " "
 
 #get all the venue links and save them
 def getAllLinks (RA_id, list_end):
@@ -61,7 +62,7 @@ def filterClubs():
 	
 	venue_links_filtered = sorted(list(set(venue_links_dirty)))
 
-	venfile = open(os.path.join(file_path, 'masterlinks.txt'), 'w')
+	venfile = open(os.path.join(file_path, 'INSERT_COUNTRY_ven_links.txt'), 'w')
 
 	for venlink in venue_links_filtered:
 		venfile.write(venlink + "\n")
@@ -104,24 +105,28 @@ def masterMethod(vlfilter):
 
 		#get picture links
 		pic = the_soup.find_all('img', src = True)
-		club = pic[1]
-		if "clubs/de" in club['src']:
-			picture = "https://www.residentadvisor.net" + club['src']
-			ws.cell(row = y, column = 3).value = picture 
-		else: 
+		try:
+			club = pic[1]
+			if "clubs" in club['src']:
+				picture = "https://www.residentadvisor.net" + club['src']
+				ws.cell(row = y, column = 3).value = picture 
+			else: 
+				ws.cell(row = y, column = 3).value = "no picture"
+		except:
 			ws.cell(row = y, column = 3).value = "no picture"
 
-
-		#Get Website and mail address
-
+		#Get Website and mail addres
 		newsoup = the_soup.find('ul', {'class': 'clearfix'})
 
 		sites = newsoup.find_all('a', href= True)
-		homepage = sites[1]
-		if "Website" in homepage: 
-			site = homepage['href']
-			ws.cell(row = y, column = 12).value = site
-		else:
+		try: 
+			homepage = sites[1]
+			if "Website" in homepage: 
+				site = homepage['href']
+				ws.cell(row = y, column = 12).value = site
+			else:
+				ws.cell(row = y, column = 12).value = "no website"
+		except: 
 			ws.cell(row = y, column = 12).value = "no website"
 
 		try:
@@ -135,15 +140,17 @@ def masterMethod(vlfilter):
 		except: 
 			ws.cell(row = y, column = 20).value = "no email"
 				
-
 		#Get capacity number
 		lis = newsoup.find_all('li')
-		capacity = lis[1]
-		capacity_dirt = capacity.get_text()
-		if "Capacity" in capacity_dirt:
-			capacity_clean = capacity_dirt.replace("Capacity /", "")
-			ws.cell(row = y, column = 8).value = capacity_clean
-		else:
+		try: 
+			capacity = lis[1]
+			capacity_dirt = capacity.get_text()
+			if "Capacity" in capacity_dirt:
+				capacity_clean = capacity_dirt.replace("Capacity /", "")
+				ws.cell(row = y, column = 8).value = capacity_clean
+			else:
+				ws.cell(row = y, column = 8).value = "no capacity"
+		except:
 			ws.cell(row = y, column = 8).value = "no capacity"
 
 
@@ -155,7 +162,7 @@ def masterMethod(vlfilter):
 				file_event_links.write(e_link + "\n")
 
 		# put a space in empty cells for nicer formatting in excel 
-		placeholders = [5, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21]
+		placeholders = [5, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23]
 		for column in placeholders:
 			ws.cell(row = y, column = column).value = " "
 
@@ -163,20 +170,21 @@ def masterMethod(vlfilter):
 
 # set up workbook
 wb = Workbook()
-filename1 = 'master.xlsx'
+filename1 = 'INSERT_COUNTRY.xlsx'
 ws = wb.active
-ws.title = 'master'
+ws.title = 'INSERT_COUNTRY'
 
-file_event_links = open(os.path.join(file_path, 'eventlinks.txt'), 'w')
+file_path = '/Users/nequalstim/Desktop/bookya'
+file_event_links = open(os.path.join(file_path, 'INSERT_COUNTRY_event.txt'), 'w')
 
 venue_links = []
 venue = "club.aspx?"
 venue_links_dirty = []
 
-file_path = '/Users/nequalstim/Desktop/bookya'
-
+#Enter RA IDs here 
 RA_ids = []
 
+#correspondant list endings here 
 list_end = []
 
 initList()
@@ -186,6 +194,9 @@ for x, y in zip(RA_ids, list_end):
 
 #filter out all the venues that didn't have an event in 2016,2017
 vlfilter = filterClubs()
+
+#just in case, we have to run it again to extract data, we don't have to filter all the links from scratch
+# vlfilter2 = [line.rstrip('\n') for line in open(os.path.join(file_path, 'germany_ven_links.txt'), 'r')]
 
 #extract all the data from the venue pages and write it to excel file 
 #additionally write the event links of each club to seperate file 
