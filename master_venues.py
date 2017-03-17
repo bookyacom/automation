@@ -86,7 +86,7 @@ def masterMethod(vlfilter):
 		# print out sorted (nach residentadvisorlink) list of clubs
 		clubname = the_soup.find('h1').string
 		clubname1 = clubname.encode('utf8')
-		ws.cell(row = y, column = 1).value = clubname
+		ws.cell(row = y, column = 1).value = clubname1
 
 		# print bio to file
 		bio_dirty = the_soup.find('div', {'style': 'padding:16px 32px 32px 0;'})
@@ -162,7 +162,7 @@ def masterMethod(vlfilter):
 				file_event_links.write(e_link + "\n")
 
 		# put a space in empty cells for nicer formatting in excel 
-		placeholders = [5, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23]
+		placeholders = [4, 5, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23]
 		for column in placeholders:
 			ws.cell(row = y, column = column).value = " "
 
@@ -174,7 +174,7 @@ filename1 = 'INSERT_COUNTRY.xlsx'
 ws = wb.active
 ws.title = 'INSERT_COUNTRY'
 
-file_path = '/Users/nequalstim/Desktop/bookya'
+file_path = '/Users/nequalstim/Desktop/bookya/INSERT_COUNTRY'
 file_event_links = open(os.path.join(file_path, 'INSERT_COUNTRY_event.txt'), 'w')
 
 venue_links = []
@@ -196,7 +196,7 @@ for x, y in zip(RA_ids, list_end):
 vlfilter = filterClubs()
 
 #just in case, we have to run it again to extract data, we don't have to filter all the links from scratch
-# vlfilter2 = [line.rstrip('\n') for line in open(os.path.join(file_path, 'germany_ven_links.txt'), 'r')]
+# vlfilter2 = [line.rstrip('\n') for line in open(os.path.join(file_path, 'INSERT_COUNTRY_ven_links.txt'), 'r')]
 
 #extract all the data from the venue pages and write it to excel file 
 #additionally write the event links of each club to seperate file 
