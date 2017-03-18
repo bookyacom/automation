@@ -62,7 +62,7 @@ def filterClubs():
 	
 	venue_links_filtered = sorted(list(set(venue_links_dirty)))
 
-	venfile = open(os.path.join(file_path, 'INSERT_COUNTRY_ven_links.txt'), 'w')
+	venfile = open(os.path.join(file_path, 'COUNTRY_ven_links.txt'), 'w')
 
 	for venlink in venue_links_filtered:
 		venfile.write(venlink + "\n")
@@ -170,12 +170,12 @@ def masterMethod(vlfilter):
 
 # set up workbook
 wb = Workbook()
-filename1 = 'INSERT_COUNTRY.xlsx'
+filename1 = 'COUNTRY.xlsx'
 ws = wb.active
-ws.title = 'INSERT_COUNTRY'
+ws.title = 'COUNTRY'
 
-file_path = '/Users/nequalstim/Desktop/bookya/INSERT_COUNTRY'
-file_event_links = open(os.path.join(file_path, 'INSERT_COUNTRY_event.txt'), 'w')
+file_path = '/Users/nequalstim/Desktop/bookya/COUNTRY'
+file_event_links = open(os.path.join(file_path, 'COUNTRY_event.txt'), 'w')
 
 venue_links = []
 venue = "club.aspx?"
@@ -196,7 +196,7 @@ for x, y in zip(RA_ids, list_end):
 vlfilter = filterClubs()
 
 #just in case, we have to run it again to extract data, we don't have to filter all the links from scratch
-# vlfilter2 = [line.rstrip('\n') for line in open(os.path.join(file_path, 'INSERT_COUNTRY_ven_links.txt'), 'r')]
+# vlfilter2 = [line.rstrip('\n') for line in open(os.path.join(file_path, 'COUNTRY_ven_links.txt'), 'r')]
 
 #extract all the data from the venue pages and write it to excel file 
 #additionally write the event links of each club to seperate file 
