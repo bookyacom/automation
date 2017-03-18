@@ -1,4 +1,4 @@
-In this repository there are three different scrapers to scrape data on Venues, Promoters and Events from ResidentAdvisor (RA). 
+In this repository there are three different scrapers to collect data on Venues, Promoters and Events from ResidentAdvisor (RA). 
 
 The scrapers run on Python 2.7 and the following Librarys must be installed beforehand:
     - BeautifoulSoup4 (https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
