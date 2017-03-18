@@ -110,6 +110,8 @@ def MastherMethod (eventlinks):
 						cost_dirty = item.get_text()
 						cost_clean = cost_dirty.replace('Cost /', '')
 						ws.cell(row=y, column = 3).value = cost_clean
+					else: 
+						ws.cell(row=y, column = 3).value = " "
 				except: 
 					ws.cell(row=y, column = 3).value = " "
 				
@@ -119,6 +121,8 @@ def MastherMethod (eventlinks):
 						prom_clean1 = prom_dirty.replace('Promoters /', '')
 						prom_clean2 = prom_clean1.encode('utf8')
 						ws.cell(row=y, column = 6).value = prom_clean2
+					else: 
+						ws.cell(row=y, column = 6).value = " "
 			 	except:
 					ws.cell(row=y, column = 6).value = " "
 
