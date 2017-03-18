@@ -129,15 +129,16 @@ def MastherMethod (eventlinks):
 
 ##################	Main Method ##################
 wb = Workbook()
-filename1 = 'germany_eventlist.xlsx'
+filename1 = 'COUNTRY_eventlist.xlsx'
 ws = wb.active
-ws.title = 'germany_eventlist'
+ws.title = 'COUNTRY_eventlist'
 
-file_path = '/Users/nequalstim/Desktop/bookya/germany'
+file_path = '/Users/nequalstim/Desktop/bookya/COUNTRY'
 
 initList()
 
-eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'germany_event.txt'), 'r')]
+#read all the eventlinks from file outputted by promoter or venue scraper
+eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'COUNTRY_event.txt'), 'r')]
 
 MastherMethod(eventlist)
 
