@@ -160,7 +160,7 @@ def masterMethod(vlfilter):
 		try: 
 			phone = lis[2]
 			phone_dirt = phone.get_text()
-			if "Capacity" in phone_dirt:
+			if "Phone" in phone_dirt:
 				phone_clean = phone_dirt.replace("Phone /", "")
 				ws.cell(row = y, column = 7).value = phone_clean
 			else:
