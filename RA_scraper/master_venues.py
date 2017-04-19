@@ -5,29 +5,32 @@ from openpyxl import Workbook
 
 def initList ():
 	#initialitze table with values 
-	ws.cell(row=1, column = 1).value = "Venue Name"
-	ws.cell(row=1, column = 2).value = "RA URL"
-	ws.cell(row=1, column = 3).value = "Profile Pic"
-	ws.cell(row=1, column = 4).value = "Location"
-	ws.cell(row=1, column = 5).value = "Google Place ID"
-	ws.cell(row=1, column = 6).value = "Bio"
-	ws.cell(row=1, column = 7).value = "Genres"
-	ws.cell(row=1, column = 8).value = "Capacity"
-	ws.cell(row=1, column = 9).value = "Performance Area"
-	ws.cell(row=1, column = 10).value = "Type of Venue"
-	ws.cell(row=1, column = 11).value = " "
-	ws.cell(row=1, column = 12).value = "Website"
-	ws.cell(row=1, column = 13).value = "Facebook"
-	ws.cell(row=1, column = 14).value = "Instagram"
-	ws.cell(row=1, column = 15).value = "Songkick"
-	ws.cell(row=1, column = 16).value = "Twitter"
-	ws.cell(row=1, column = 17).value = "Youtube"
-	ws.cell(row=1, column = 18).value = " "
-	ws.cell(row=1, column = 19).value = "Main Contact"
-	ws.cell(row=1, column = 20).value = "Email"
-	ws.cell(row=1, column = 21).value = "Phone number"
-	ws.cell(row=1, column = 22).value = "Address"
-	ws.cell(row=1, column = 23).value = " "
+	ws.cell(row=1, column = 1).value = "RA_URL"
+	ws.cell(row=1, column = 2).value = "dispay_name"
+	ws.cell(row=1, column = 3).value = "profile_photo"
+	ws.cell(row=1, column = 4).value = "email"
+	ws.cell(row=1, column = 5).value = "public_email"	
+	ws.cell(row=1, column = 6).value = "public_contact_number"
+	ws.cell(row=1, column = 7).value = "contact_number"
+	ws.cell(row=1, column = 8).value = "bio"
+	ws.cell(row=1, column = 9).value = "websites"
+	ws.cell(row=1, column = 10).value = "genre_list"
+	ws.cell(row=1, column = 11).value = "type_list"
+	ws.cell(row=1, column = 12).value = "performance_area_count"
+	ws.cell(row=1, column = 13).value = "capacity"
+	ws.cell(row=1, column = 14).value = "address_line_one"
+	ws.cell(row=1, column = 15).value = "address_line_two"
+	ws.cell(row=1, column = 16).value = "external_id"
+	ws.cell(row=1, column = 17).value = "city"
+	ws.cell(row=1, column = 18).value = "country"
+	ws.cell(row=1, column = 19).value = "contact_person"
+	ws.cell(row=1, column = 20).value = "facebook_page"
+	ws.cell(row=1, column = 21).value = "instagram"
+	ws.cell(row=1, column = 22).value = "mixcloud"
+	ws.cell(row=1, column = 23).value = "patryflock"
+	ws.cell(row=1, column = 24).value = "songkick"
+	ws.cell(row=1, column = 25).value = "twitter"
+	ws.cell(row=1, column = 26).value = "youtube_channel"
 
 #get all the venue links and save them
 def getAllLinks (RA_id, list_end):
@@ -81,26 +84,26 @@ def masterMethod(vlfilter):
 		the_r = requests.get(ven_url)
 		the_soup = BeautifulSoup(the_r.content, "lxml")
 
-		ws.cell(row = y, column = 2).value = ven_url
+		ws.cell(row = y, column = 1).value = ven_url
 
 		# print out sorted (nach residentadvisorlink) list of clubs
 		clubname = the_soup.find('h1').string
 		clubname1 = clubname.encode('utf8')
-		ws.cell(row = y, column = 1).value = clubname1
+		ws.cell(row = y, column = 2).value = clubname1
 
 		# print bio to file
 		bio_dirty = the_soup.find('div', {'style': 'padding:16px 32px 32px 0;'})
 		bio = bio_dirty.get_text()
 		bio2 = bio.encode('utf8')
-		ws.cell(row = y, column = 6).value = bio2
+		ws.cell(row = y, column = 8).value = bio2
 
 		#print adresses of clubs
 		try:
 			address_dirty = the_soup.find('span', {'itemprop': 'street-address'})
 			address = address_dirty.get_text()
-			ws.cell(row = y, column = 22).value = address
+			ws.cell(row = y, column = 14).value = address
 		except:
-			ws.cell(row = y, column = 22).value = "no address"
+			ws.cell(row = y, column = 14).value = "-"
 
 
 		#get picture links
@@ -111,9 +114,9 @@ def masterMethod(vlfilter):
 				picture = "https://www.residentadvisor.net" + club['src']
 				ws.cell(row = y, column = 3).value = picture 
 			else: 
-				ws.cell(row = y, column = 3).value = "no picture"
+				ws.cell(row = y, column = 3).value = "-"
 		except:
-			ws.cell(row = y, column = 3).value = "no picture"
+			ws.cell(row = y, column = 3).value = "-"
 
 		#Get Website and mail addres
 		newsoup = the_soup.find('ul', {'class': 'clearfix'})
@@ -123,22 +126,22 @@ def masterMethod(vlfilter):
 			homepage = sites[1]
 			if "Website" in homepage: 
 				site = homepage['href']
-				ws.cell(row = y, column = 12).value = site
+				ws.cell(row = y, column = 9).value = site
 			else:
-				ws.cell(row = y, column = 12).value = "no website"
+				ws.cell(row = y, column = 9).value = "-"
 		except: 
-			ws.cell(row = y, column = 12).value = "no website"
+			ws.cell(row = y, column = 9).value = "-"
 
 		try:
 			mailpage = sites[3]
 			if "Email" in mailpage:
 				email_dirt = mailpage['href']
 				email_clean = email_dirt.replace("mailto:", "")
-				ws.cell(row = y, column = 20).value = email_clean
+				ws.cell(row = y, column = 4).value = email_clean
 			else: 
-				ws.cell(row = y, column = 20).value = "no email"
+				ws.cell(row = y, column = 4).value = "-"
 		except: 
-			ws.cell(row = y, column = 20).value = "no email"
+			ws.cell(row = y, column = 4).value = "-"
 				
 		#Get capacity number
 		lis = newsoup.find_all('li')
@@ -147,11 +150,11 @@ def masterMethod(vlfilter):
 			capacity_dirt = capacity.get_text()
 			if "Capacity" in capacity_dirt:
 				capacity_clean = capacity_dirt.replace("Capacity /", "")
-				ws.cell(row = y, column = 8).value = capacity_clean
+				ws.cell(row = y, column = 13).value = capacity_clean
 			else:
-				ws.cell(row = y, column = 8).value = "no capacity"
+				ws.cell(row = y, column = 13).value = "-"
 		except:
-			ws.cell(row = y, column = 8).value = "no capacity"
+			ws.cell(row = y, column = 13).value = "-"
 
 
 		#extract all the event links from venues
@@ -162,7 +165,7 @@ def masterMethod(vlfilter):
 				file_event_links.write(e_link + "\n")
 
 		# put a space in empty cells for nicer formatting in excel 
-		placeholders = [4, 5, 7, 9, 10, 11, 13, 14, 15, 16, 17, 18, 19, 21, 23]
+		placeholders = [5, 6, 7, 10, 11, 12, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26]
 		for column in placeholders:
 			ws.cell(row = y, column = column).value = " "
 
