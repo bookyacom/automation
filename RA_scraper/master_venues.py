@@ -156,6 +156,18 @@ def masterMethod(vlfilter):
 		except:
 			ws.cell(row = y, column = 13).value = "-"
 
+		#Get contact number
+		try: 
+			phone = lis[2]
+			phone_dirt = phone.get_text()
+			if "Capacity" in phone_dirt:
+				phone_clean = phone_dirt.replace("Phone /", "")
+				ws.cell(row = y, column = 7).value = phone_clean
+			else:
+				ws.cell(row = y, column = 7).value = "-"
+		except:
+			ws.cell(row = y, column = 7).value = "-"
+
 
 		#extract all the event links from venues
 		event = "event.aspx?"
