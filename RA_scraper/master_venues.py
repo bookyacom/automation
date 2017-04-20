@@ -126,7 +126,11 @@ def masterMethod(vlfilter):
 			homepage = sites[1]
 			if "Website" in homepage: 
 				site = homepage['href']
-				ws.cell(row = y, column = 9).value = site
+				if 'facebook' in site: 
+					ws.cell(row = y, column = 20).value = site
+					ws.cell(row = y, column = 9).value = '-'
+				else: 
+					ws.cell(row = y, column = 9).value = site
 			else:
 				ws.cell(row = y, column = 9).value = "-"
 		except: 
