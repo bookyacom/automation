@@ -193,7 +193,7 @@ filename1 = 'COUNTRY.xlsx'
 ws = wb.active
 ws.title = 'COUNTRY'
 
-file_path = '/Users/nequalstim/Desktop/bookya/COUNTRY'
+file_path = '/Users/nequalstim/Google Drive/DATABASE/EMEA/COUNTRY'
 file_event_links = open(os.path.join(file_path, 'COUNTRY_event.txt'), 'w')
 
 venue_links = []
