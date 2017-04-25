@@ -221,5 +221,5 @@ vlfilter = filterClubs()
 #additionally write the event links of each club to seperate file 
 masterMethod(vlfilter)
 
-wb.save(filename = filename1)
+wb.save(file_path + '/' + filename1)
 file_event_links.close()
