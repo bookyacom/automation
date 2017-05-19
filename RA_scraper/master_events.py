@@ -38,133 +38,141 @@ def initList ():
 	ws.cell(row=1, column = 31).value = "twitter"
 	ws.cell(row=1, column = 32).value = "youtube_channel"
 	ws.cell(row=1, column = 33).value = "bandsintown"
+	ws.cell(row=1, column = 34).value = "Garbage lineup"
 
 
 
 def MastherMethod (eventlinks):
 	y=1 #row counter
 	for event in eventlinks:
+
+		y+=1 
+		r = requests.get(event)
+		soup = BeautifulSoup(r.content, 'lxml')
+
+		eventname = soup.find('h1').string 
+		ws.cell(row=y, column=1).value = eventname
+
+		new_soup = soup.find('div', {'id': 'event-item'})
+
+		#get line up and bio
+		helper = new_soup.find_all('p')
 		try: 
-			y+=1 
-			r = requests.get(event)
-			soup = BeautifulSoup(r.content, 'lxml')
-
-			ws.cell(row=y, column = 13).value = event
-
-			eventname = soup.find('h1').string 
-			ws.cell(row=y, column=1).value = eventname
-
-			new_soup = soup.find('div', {'id': 'event-item'})
-
-			#get line up and bio
-			helper = new_soup.find_all('p')
-			try: 
-				line_up1 = helper[0].get_text()
-				line_up2 = line_up1.encode('utf8')
-				ws.cell(row=y, column=4).value = line_up2
-				bio1 = helper[1].get_text()
-				bio2 = bio1.encode('utf8')
-				ws.cell(row=y, column=5).value = bio2
-			except: 
-				pass
-
-			#get flyer picture
-			try: 
-				helper2 = new_soup.find('div', {'class': 'flyer'})
-				flyer_dirty= helper2.find('a', href=True)
-				flyer = "https://www.residentadvisor.net" + flyer_dirty['href']
-				ws.cell(row=y, column=8).value = flyer
-			except: 
-				pass
-
-			#get all the links, first is event admin, then update event, then promo links!
-			helper3 = new_soup.find('div', {'class': 'clearfix right'})
-
-			links = helper3.find('div', {'class': 'links'})
-			links2 = links.find_all('a', href=True)
-			try: 
-				admin = links2[0].get_text()
-				ws.cell(row=y, column = 9).value = admin
-			except:
-				ws.cell(row=y, column = 9).value = " "
-
-			try: 
-				promolink1 = links2[2]['href']
-				# promolink2 = promolink1['href']
-				ws.cell(row=y, column = 10).value = promolink1
-			except: 
-				ws.cell(row=y, column = 10).value = " "
-
-
-			try: 
-				promolink2 = links2[3]['href']
-				ws.cell(row=y, column = 11).value = promolink2
-			except: 
-				ws.cell(row=y, column = 11).value = " " 
-			try: 
-				promolink3 = links2[4]['href']
-				ws.cell(row=y, column = 12).value = promolink3
-			except: 
-				ws.cell(row=y, column = 12).value = " "
-
-			test = soup.find('ul', {'class': 'clearfix'})
-			test2 = test.find_all('a', href=True)
-
-			for item in test2:
-				try:
-					if "events.aspx" in item['href']:
-						#date 
-						ws.cell(row=y, column=2).value = item.get_text()
-				except: 
-					ws.cell(row=y, column=2).value = " "
-				try:
-					if "club.aspx" in item['href']:
-						ws.cell(row=y, column=7).value = item.get_text()
-				except:
-					ws.cell(row=y, column=7).value = " "
-
-			#get costs for event
-			li = test.find_all('li')
-			for item in li:
-				try: 
-					if "Cost" in item.get_text():
-						cost_dirty = item.get_text()
-						cost_clean = cost_dirty.replace('Cost /', '')
-						ws.cell(row=y, column = 3).value = cost_clean
-					else: 
-						ws.cell(row=y, column = 3).value = " "
-				except: 
-					ws.cell(row=y, column = 3).value = " "
-				
-				try: 
-					if "Promoters /" in item.get_text():
-						prom_dirty = item.get_text()
-						prom_clean1 = prom_dirty.replace('Promoters /', '')
-						prom_clean2 = prom_clean1.encode('utf8')
-						ws.cell(row=y, column = 6).value = prom_clean2
-					else: 
-						ws.cell(row=y, column = 6).value = " "
-			 	except:
-					ws.cell(row=y, column = 6).value = " "
-
-			ws.cell(row=y, column = 14).value = " "
-
+			line_up1 = helper[0]
+			line_up2 = line_up1.find_all('a', href=True)
+			for item in line_up2:
+				ws.cell(row=y, column = 20).value = item.get_text().encode('utf8')
+			bio1 = helper[1].get_text()
+			bio2 = bio1.encode('utf8')
+			ws.cell(row=y, column=8).value = bio2
 		except: 
 			pass
 
+		#get flyer picture
+		try: 
+			helper2 = new_soup.find('div', {'class': 'flyer'})
+			flyer_dirty= helper2.find('a', href=True)
+			flyer = "https://www.residentadvisor.net" + flyer_dirty['href']
+			ws.cell(row=y, column=2).value = flyer
+		except: 
+			pass
+
+		#get all the links, first is event admin, then update event, then promo links!
+		helper3 = new_soup.find('div', {'class': 'clearfix right'})
+
+		links = helper3.find('div', {'class': 'links'})
+		links2 = links.find_all('a', href=True)
+		try: 
+			admin = links2[0].get_text()
+			ws.cell(row=y, column = 9).value = admin
+		except:
+			ws.cell(row=y, column = 9).value = " "
+
+		try: 
+			promolink1 = links2[2]['href']
+			# promolink2 = promolink1['href']
+			ws.cell(row=y, column = 26).value = promolink1
+		except: 
+			ws.cell(row=y, column = 26).value = " "
+
+
+		try: 
+			promolink2 = links2[3]['href']
+			ws.cell(row=y, column = 27).value = promolink2
+		except: 
+			ws.cell(row=y, column = 27).value = " " 
+		try: 
+			promolink3 = links2[4]['href']
+			ws.cell(row=y, column = 28).value = promolink3
+		except: 
+			ws.cell(row=y, column = 28).value = " "
+
+		test = soup.find('ul', {'class': 'clearfix'})
+		test2 = test.find_all('a', href=True)
+
+		for item in test2:
+			try:
+				if "events.aspx" in item['href']:
+					#date 
+					ws.cell(row=y, column=11).value = item.get_text()
+			except: 
+				ws.cell(row=y, column=11).value = " "
+			try:
+				if "club.aspx" in item['href']:
+					ws.cell(row=y, column=18).value = item.get_text()
+			except:
+				ws.cell(row=y, column=18).value = " "
+
+		#get costs for event
+		li = test.find_all('li')
+		for item in li:
+			try: 
+				if "Cost" in item.get_text():
+					cost_dirty = item.get_text()
+					cost_clean = cost_dirty.replace('Cost /', '')
+					ws.cell(row=y, column = 13).value = cost_clean
+				else: 
+					ws.cell(row=y, column = 13).value = " "
+			except: 
+				ws.cell(row=y, column = 13).value = " "
+			
+			try: 
+				if "Promoters /" in item.get_text():
+					prom_dirty = item.get_text()
+					prom_clean1 = prom_dirty.replace('Promoters /', '')
+					prom_clean2 = prom_clean1.encode('utf8')
+					ws.cell(row=y, column = 16).value = prom_clean2
+				else: 
+					ws.cell(row=y, column = 16).value = " "
+		 	except:
+				ws.cell(row=y, column = 16).value = " "
+
+		# put a space in empty cells for nicer formatting in excel 
+		placeholders = [3, 5, 6, 14, 15, 17, 21, 22, 23, 24, 25, 29, 30, 31, 32, 33]
+		for column in placeholders:
+			ws.cell(row = y, column = column).value = " "
+
 ##################	Main Method ##################
 wb = Workbook()
-filename1 = 'COUNTRY_eventlist.xlsx'
+filename1 = 'Test_eventlist.xlsx'
 ws = wb.active
-ws.title = 'COUNTRY_eventlist'
+ws.title = 'test_event'
 
-file_path = '/Users/nequalstim/Desktop/bookya/COUNTRY'
+file_path = '/Users/nequalstim/Desktop'
 
 initList()
 
 #read all the eventlinks from file outputted by promoter or venue scraper
-eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'COUNTRY_event.txt'), 'r')]
+eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'test_events.txt'), 'r')]
 
 MastherMethod(eventlist)
 
-wb.save(filename = filename1)
+wb.save(file_path + '/' + filename1)
+
+//TODO write comma seperated array to line up column 
+
+//TODO Big clean up 
+
+
+
+
