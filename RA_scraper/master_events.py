@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 import os
 from openpyxl import Workbook
+import re
 
 def initList ():
 	#initialitze table with values 
@@ -39,7 +40,9 @@ def initList ():
 	ws.cell(row=1, column = 32).value = "youtube_channel"
 	ws.cell(row=1, column = 33).value = "bandsintown"
 	ws.cell(row=1, column = 34).value = "Garbage lineup"
-
+	ws.cell(row=1, column = 35).value = "link1"
+	ws.cell(row=1, column = 36).value = "link2"
+	ws.cell(row=1, column = 37).value = "link3"
 
 
 def MastherMethod (eventlinks):
@@ -53,19 +56,28 @@ def MastherMethod (eventlinks):
 		eventname = soup.find('h1').string 
 		ws.cell(row=y, column=1).value = eventname
 
+		ws.cell(row=y, column = 3).value = "noreply@bookya.com"
+
 		new_soup = soup.find('div', {'id': 'event-item'})
 
-		#get line up and bio
+		#get line up 
 		helper = new_soup.find_all('p')
-		try: 
+		try:
+			helper_array = [] 
 			line_up1 = helper[0]
 			line_up2 = line_up1.find_all('a', href=True)
 			for item in line_up2:
-				ws.cell(row=y, column = 20).value = item.get_text().encode('utf8')
+				helper_array.append(item.get_text().encode('utf8'))
+			ws.cell(row=y, column = 20).value = str(helper_array)
+		except: 
+			pass
+
+		#get bio
+		try: 
 			bio1 = helper[1].get_text()
 			bio2 = bio1.encode('utf8')
 			ws.cell(row=y, column=8).value = bio2
-		except: 
+		except:
 			pass
 
 		#get flyer picture
@@ -75,37 +87,22 @@ def MastherMethod (eventlinks):
 			flyer = "https://www.residentadvisor.net" + flyer_dirty['href']
 			ws.cell(row=y, column=2).value = flyer
 		except: 
-			pass
+			ws.cell(row=y, column=2).value = " "
 
 		#get all the links, first is event admin, then update event, then promo links!
 		helper3 = new_soup.find('div', {'class': 'clearfix right'})
 
 		links = helper3.find('div', {'class': 'links'})
 		links2 = links.find_all('a', href=True)
-		try: 
-			admin = links2[0].get_text()
-			ws.cell(row=y, column = 9).value = admin
-		except:
-			ws.cell(row=y, column = 9).value = " "
 
-		try: 
-			promolink1 = links2[2]['href']
-			# promolink2 = promolink1['href']
-			ws.cell(row=y, column = 26).value = promolink1
-		except: 
-			ws.cell(row=y, column = 26).value = " "
+		#not really useful, because it's the RA account name
+		# try: 
+		# 	promoter_name = links2[0].get_text()
+		# 	ws.cell(row=y, column = 16).value = promoter_name
+		# except:
+		# 	ws.cell(row=y, column = 16).value = " "
 
 
-		try: 
-			promolink2 = links2[3]['href']
-			ws.cell(row=y, column = 27).value = promolink2
-		except: 
-			ws.cell(row=y, column = 27).value = " " 
-		try: 
-			promolink3 = links2[4]['href']
-			ws.cell(row=y, column = 28).value = promolink3
-		except: 
-			ws.cell(row=y, column = 28).value = " "
 
 		test = soup.find('ul', {'class': 'clearfix'})
 		test2 = test.find_all('a', href=True)
@@ -119,9 +116,37 @@ def MastherMethod (eventlinks):
 				ws.cell(row=y, column=11).value = " "
 			try:
 				if "club.aspx" in item['href']:
-					ws.cell(row=y, column=18).value = item.get_text()
+					venue_n = item.get_text()
+					ws.cell(row=y, column=18).value = venue_n
 			except:
 				ws.cell(row=y, column=18).value = " "
+
+		try: 
+			promolink1 = links2[2]['href']
+			if venue_n.lower() in promolink1:
+				ws.cell(row=y, column = 19).value = promolink1
+			else:
+				ws.cell(row=y, column = 35).value = promolink1
+		except: 
+			ws.cell(row=y, column = 35).value = " "
+
+
+		try: 
+			promolink2 = links2[3]['href']
+			if venue_n.lower() in promolink2:
+				ws.cell(row=y, column = 19).value = promolink2
+			else:
+				ws.cell(row=y, column = 35).value = promolink2
+		except: 
+			ws.cell(row=y, column = 36).value = " " 
+		try: 
+			promolink3 = links2[4]['href']
+			if venue_n.lower() in promolink3:
+				ws.cell(row=y, column = 19).value = promolink3
+			else:
+				ws.cell(row=y, column = 35).value = promolink3
+		except: 
+			ws.cell(row=y, column = 37).value = " "		
 
 		#get costs for event
 		li = test.find_all('li')
@@ -131,6 +156,8 @@ def MastherMethod (eventlinks):
 					cost_dirty = item.get_text()
 					cost_clean = cost_dirty.replace('Cost /', '')
 					ws.cell(row=y, column = 13).value = cost_clean
+					if 'Euro' or 'euro' or '€' in cost_clean:
+						ws.cell(row=y, column = 13).value = 'Euro'
 				else: 
 					ws.cell(row=y, column = 13).value = " "
 			except: 
@@ -141,11 +168,11 @@ def MastherMethod (eventlinks):
 					prom_dirty = item.get_text()
 					prom_clean1 = prom_dirty.replace('Promoters /', '')
 					prom_clean2 = prom_clean1.encode('utf8')
-					ws.cell(row=y, column = 16).value = prom_clean2
+					ws.cell(row=y, column = 32).value = prom_clean2
 				else: 
-					ws.cell(row=y, column = 16).value = " "
+					ws.cell(row=y, column = 32).value = " "
 		 	except:
-				ws.cell(row=y, column = 16).value = " "
+				ws.cell(row=y, column = 32).value = " "
 
 		# put a space in empty cells for nicer formatting in excel 
 		placeholders = [3, 5, 6, 14, 15, 17, 21, 22, 23, 24, 25, 29, 30, 31, 32, 33]
@@ -169,10 +196,4 @@ MastherMethod(eventlist)
 
 wb.save(file_path + '/' + filename1)
 
-//TODO write comma seperated array to line up column 
-
-//TODO Big clean up 
-
-
-
-
+# //TODO API-call, Euro or €? clean out price depending on country?
