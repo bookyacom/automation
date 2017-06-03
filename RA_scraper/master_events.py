@@ -1,4 +1,3 @@
-#TODO only want those aritsts and venues that are already in the DB
 import json
 import requests 
 from bs4 import BeautifulSoup
@@ -42,9 +41,6 @@ def initList ():
 	ws.cell(row=1, column = 32).value = "youtube_channel"
 	ws.cell(row=1, column = 33).value = "bandsintown"
 	ws.cell(row=1, column = 34).value = "Garbage lineup"
-	ws.cell(row=1, column = 35).value = "link1"
-	ws.cell(row=1, column = 36).value = "link2"
-	ws.cell(row=1, column = 37).value = "link3"
 
 
 def MastherMethod (eventlinks):
@@ -66,8 +62,9 @@ def MastherMethod (eventlinks):
 		#get line up 
 		helper = new_soup.find_all('p')
 		try:
-			helper_array_urls = [] 
-			helper_array_line = [] 
+			helper_array_urls1 = [] 
+			helper_array_urls2 = []
+			helper_array_dirty = [] 
 			line_up1 = helper[0]
 			line_up2 = line_up1.find_all('a', href=True)
 			for item in line_up2:
@@ -75,12 +72,14 @@ def MastherMethod (eventlinks):
 				response = requests.get(api_url, params=parameters)
 				data = response.json()
 				if not data['profiles']:
-					helper_array_line.append(item.get_text().encode('utf8'))
+					helper_array_dirty.append(item.get_text().encode('utf8'))
 				else: 
-					helper_array_urls.append(data['profiles'][0]['bookya_url'])
+					helper_array_urls1.append(item.get_text().encode('utf8'))
+					helper_array_urls2.append(data['profiles'][0]['bookya_url'])
 
-			ws.cell(row=y, column = 20).value = str(helper_array_line)
-			ws.cell(row=y, column = 21).value = str(helper_array_urls)
+			ws.cell(row=y, column = 20).value = str(helper_array_urls1)
+			ws.cell(row=y, column = 21).value = str(helper_array_urls2)
+			ws.cell(row=y, column = 34).value = str(helper_array_dirty)
 		except: 
 			pass
 
@@ -106,16 +105,6 @@ def MastherMethod (eventlinks):
 
 		links = helper3.find('div', {'class': 'links'})
 		links2 = links.find_all('a', href=True)
-
-		#not really useful, because it's the RA account name
-		# try: 
-		# 	promoter_name = links2[0].get_text()
-		# 	print "links2[0] = " + promoter_name
-		# 	ws.cell(row=y, column = 16).value = promoter_name
-		# except:
-		# 	ws.cell(row=y, column = 16).value = " "
-
-
 
 		test = soup.find('ul', {'class': 'clearfix'})
 		test2 = test.find_all('a', href=True)
@@ -144,55 +133,6 @@ def MastherMethod (eventlinks):
 			except:
 				ws.cell(row=y, column=18).value = " "
 
-			try:
-				if "promoter.aspx" in item['href']:
-					promoter = item.get_text()
-					parameters = {"name": promoter, "type": "promoter"}
-					response = requests.get(api_url, params=parameters)
-					data = response.json()
-					if not data['profiles']:
-						ws.cell(row=y, column=16).value = promoter
-					else: 
-						ws.cell(row=y, column=16).value = promoter
-						ws.cell(row=y, column=17).value = data['profiles'][0]['bookya_url']
-			except:
-				ws.cell(row=y, column=16).value = " "
-
-
-
-
-		# here you get all the socials from the right side, not useful
-		# try: 
-		# 	promolink1 = links2[2]['href']
-		# 	print "links2[2] = " + links2[2]['href']
-		# 	if venue_n.lower() in promolink1:
-		# 		ws.cell(row=y, column = 35).value = promolink1
-		# 	else:
-		# 		ws.cell(row=y, column = 35).value = promolink1
-		# except: 
-		# 	ws.cell(row=y, column = 35).value = " "
-
-
-		# try: 
-		# 	promolink2 = links2[3]['href']
-		# 	print "links2[3] = " + links2[3]['href']
-		# 	if venue_n.lower() in promolink2:
-		# 		ws.cell(row=y, column = 36).value = promolink2
-		# 	else:
-		# 		ws.cell(row=y, column = 36).value = promolink2
-		# except:
-		# 	ws.cell(row=y, column = 36).value = " " 
-		# try: 
-		# 	promolink3 = links2[4]['href']
-		# 	print "links2[4] = " + links2[4]['href']
-		# 	print "---------------------------------"
-		# 	if venue_n.lower() in promolink3:
-		# 		ws.cell(row=y, column = 37).value = promolink3
-		# 	else:
-		# 		ws.cell(row=y, column = 37).value = promolink3
-		# except: 
-		# 	ws.cell(row=y, column = 37).value = " "		
-
 		#get costs for event
 		li = test.find_all('li')
 		for item in li:
@@ -211,18 +151,26 @@ def MastherMethod (eventlinks):
 					prom_dirty = item.get_text()
 					prom_clean1 = prom_dirty.replace('Promoters /', '')
 					prom_clean2 = prom_clean1.encode('utf8')
-					ws.cell(row=y, column = 32).value = prom_clean2
+					parameters = {"name": promo_clean2, "type": "promoter"}
+					response = requests.get(api_url, params=parameters)
+					data = response.json()
+					if not data['profiles']:
+						ws.cell(row=y, column=16).value = promoter
+					else: 
+						ws.cell(row=y, column=16).value = promoter
+						ws.cell(row=y, column=17).value = data['profiles'][0]['bookya_url']
 				else: 
-					ws.cell(row=y, column = 32).value = " "
+					ws.cell(row=y, column = 16).value = " "
+					ws.cell(row=y, column = 17).value = " "
 		 	except:
-				ws.cell(row=y, column = 32).value = " "
+				ws.cell(row=y, column = 16).value = " "
+				ws.cell(row=y, column = 17).value = " "
 
 		# put a space in empty cells for nicer formatting in excel 
 		placeholders = [4, 5, 6, 7, 9, 10, 14, 15, 22, 23, 24, 25, 29, 30, 31, 33]
 		for column in placeholders:
 			ws.cell(row = y, column = column).value = " "
 
-		print "-------------------------------"
 
 ##################	Main Method ##################
 wb = Workbook()
@@ -240,3 +188,5 @@ eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'test_ev
 MastherMethod(eventlist)
 
 wb.save(file_path + '/' + filename1)
+
+
