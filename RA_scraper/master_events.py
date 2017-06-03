@@ -1,3 +1,5 @@
+#TODO only want those aritsts and venues that are already in the DB
+import json
 import requests 
 from bs4 import BeautifulSoup
 import os
@@ -47,6 +49,7 @@ def initList ():
 
 def MastherMethod (eventlinks):
 	y=1 #row counter
+	api_url = "https://admin-api-test.bookya.com/admin/check?"
 	for event in eventlinks:
 
 		y+=1 
@@ -63,12 +66,21 @@ def MastherMethod (eventlinks):
 		#get line up 
 		helper = new_soup.find_all('p')
 		try:
-			helper_array = [] 
+			helper_array_urls = [] 
+			helper_array_line = [] 
 			line_up1 = helper[0]
 			line_up2 = line_up1.find_all('a', href=True)
 			for item in line_up2:
-				helper_array.append(item.get_text().encode('utf8'))
-			ws.cell(row=y, column = 20).value = str(helper_array)
+				parameters = {"name": item, "type": "artist"}
+				response = requests.get(api_url, params=parameters)
+				data = response.json()
+				if not data['profiles']:
+					helper_array_line.append(item.get_text().encode('utf8'))
+				else: 
+					helper_array_urls.append(data['profiles'][0]['bookya_url'])
+
+			ws.cell(row=y, column = 20).value = str(helper_array_line)
+			ws.cell(row=y, column = 21).value = str(helper_array_urls)
 		except: 
 			pass
 
@@ -98,6 +110,7 @@ def MastherMethod (eventlinks):
 		#not really useful, because it's the RA account name
 		# try: 
 		# 	promoter_name = links2[0].get_text()
+		# 	print "links2[0] = " + promoter_name
 		# 	ws.cell(row=y, column = 16).value = promoter_name
 		# except:
 		# 	ws.cell(row=y, column = 16).value = " "
@@ -106,47 +119,79 @@ def MastherMethod (eventlinks):
 
 		test = soup.find('ul', {'class': 'clearfix'})
 		test2 = test.find_all('a', href=True)
-
+		z=11
 		for item in test2:
 			try:
 				if "events.aspx" in item['href']:
-					#date 
-					ws.cell(row=y, column=11).value = item.get_text()
+					#date
+					ws.cell(row=y, column=z).value = item.get_text()
+					z+=1
 			except: 
 				ws.cell(row=y, column=11).value = " "
+
 			try:
 				if "club.aspx" in item['href']:
 					venue_n = item.get_text()
-					ws.cell(row=y, column=18).value = venue_n
+					parameters = {"name": venue_n, "type": "venue"}
+					response = requests.get(api_url, params=parameters)
+					data = response.json()
+					if not data['profiles']:
+						ws.cell(row=y, column=18).value = venue_n
+					else:
+						ws.cell(row=y, column=18).value = venue_n
+						ws.cell(row=y, column=19).value = data['profiles'][0]['bookya_url']
+
 			except:
 				ws.cell(row=y, column=18).value = " "
 
-		try: 
-			promolink1 = links2[2]['href']
-			if venue_n.lower() in promolink1:
-				ws.cell(row=y, column = 19).value = promolink1
-			else:
-				ws.cell(row=y, column = 35).value = promolink1
-		except: 
-			ws.cell(row=y, column = 35).value = " "
+			try:
+				if "promoter.aspx" in item['href']:
+					promoter = item.get_text()
+					parameters = {"name": promoter, "type": "promoter"}
+					response = requests.get(api_url, params=parameters)
+					data = response.json()
+					if not data['profiles']:
+						ws.cell(row=y, column=16).value = promoter
+					else: 
+						ws.cell(row=y, column=16).value = promoter
+						ws.cell(row=y, column=17).value = data['profiles'][0]['bookya_url']
+			except:
+				ws.cell(row=y, column=16).value = " "
 
 
-		try: 
-			promolink2 = links2[3]['href']
-			if venue_n.lower() in promolink2:
-				ws.cell(row=y, column = 19).value = promolink2
-			else:
-				ws.cell(row=y, column = 35).value = promolink2
-		except: 
-			ws.cell(row=y, column = 36).value = " " 
-		try: 
-			promolink3 = links2[4]['href']
-			if venue_n.lower() in promolink3:
-				ws.cell(row=y, column = 19).value = promolink3
-			else:
-				ws.cell(row=y, column = 35).value = promolink3
-		except: 
-			ws.cell(row=y, column = 37).value = " "		
+
+
+		# here you get all the socials from the right side, not useful
+		# try: 
+		# 	promolink1 = links2[2]['href']
+		# 	print "links2[2] = " + links2[2]['href']
+		# 	if venue_n.lower() in promolink1:
+		# 		ws.cell(row=y, column = 35).value = promolink1
+		# 	else:
+		# 		ws.cell(row=y, column = 35).value = promolink1
+		# except: 
+		# 	ws.cell(row=y, column = 35).value = " "
+
+
+		# try: 
+		# 	promolink2 = links2[3]['href']
+		# 	print "links2[3] = " + links2[3]['href']
+		# 	if venue_n.lower() in promolink2:
+		# 		ws.cell(row=y, column = 36).value = promolink2
+		# 	else:
+		# 		ws.cell(row=y, column = 36).value = promolink2
+		# except:
+		# 	ws.cell(row=y, column = 36).value = " " 
+		# try: 
+		# 	promolink3 = links2[4]['href']
+		# 	print "links2[4] = " + links2[4]['href']
+		# 	print "---------------------------------"
+		# 	if venue_n.lower() in promolink3:
+		# 		ws.cell(row=y, column = 37).value = promolink3
+		# 	else:
+		# 		ws.cell(row=y, column = 37).value = promolink3
+		# except: 
+		# 	ws.cell(row=y, column = 37).value = " "		
 
 		#get costs for event
 		li = test.find_all('li')
@@ -156,8 +201,6 @@ def MastherMethod (eventlinks):
 					cost_dirty = item.get_text()
 					cost_clean = cost_dirty.replace('Cost /', '')
 					ws.cell(row=y, column = 13).value = cost_clean
-					if 'Euro' or 'euro' or '€' in cost_clean:
-						ws.cell(row=y, column = 13).value = 'Euro'
 				else: 
 					ws.cell(row=y, column = 13).value = " "
 			except: 
@@ -175,17 +218,19 @@ def MastherMethod (eventlinks):
 				ws.cell(row=y, column = 32).value = " "
 
 		# put a space in empty cells for nicer formatting in excel 
-		placeholders = [3, 5, 6, 14, 15, 17, 21, 22, 23, 24, 25, 29, 30, 31, 32, 33]
+		placeholders = [4, 5, 6, 7, 9, 10, 14, 15, 22, 23, 24, 25, 29, 30, 31, 33]
 		for column in placeholders:
 			ws.cell(row = y, column = column).value = " "
 
+		print "-------------------------------"
+
 ##################	Main Method ##################
 wb = Workbook()
-filename1 = 'Test_eventlist.xlsx'
+filename1 = 'COUNTRY_events.xlsx'
 ws = wb.active
-ws.title = 'test_event'
+ws.title = 'Event'
 
-file_path = '/Users/nequalstim/Desktop'
+file_path = '/Users/nequalstim/Google Drive/DATABASE/EMEA/COUNTRY'
 
 initList()
 
@@ -195,5 +240,3 @@ eventlist = [line.rstrip('\n') for line in open(os.path.join(file_path, 'test_ev
 MastherMethod(eventlist)
 
 wb.save(file_path + '/' + filename1)
-
-# //TODO API-call, Euro or €? clean out price depending on country?
