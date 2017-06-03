@@ -68,13 +68,15 @@ def MastherMethod (eventlinks):
 			line_up1 = helper[0]
 			line_up2 = line_up1.find_all('a', href=True)
 			for item in line_up2:
+				artist = item.get_text().encode('utf8')
 				parameters = {"name": item, "type": "artist"}
 				response = requests.get(api_url, params=parameters)
 				data = response.json()
 				if not data['profiles']:
-					helper_array_dirty.append(item.get_text().encode('utf8'))
-				else: 
-					helper_array_urls1.append(item.get_text().encode('utf8'))
+					helper_array_dirty.append(artist)
+				else:
+					helper_array_dirty.append(artist) 
+					helper_array_urls1.append(artist)
 					helper_array_urls2.append(data['profiles'][0]['bookya_url'])
 
 			ws.cell(row=y, column = 20).value = str(helper_array_urls1)
