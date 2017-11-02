@@ -1,29 +1,26 @@
-# automation [![Dependency Status](https://gemnasium.com/badges/4fb0d3a6d4a883ba5ba81cb7aed21741.svg)](https://gemnasium.com/github.com/bookyacom/automation)
+# Scraper Microservice [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation)
 
-Automated scripts repository
+> This is Bookya Scraper microservice repository that use Python framework.
 
-## Modules
+## Requirements
+- [Python 2.7](https://www.python.org) at least
 
-### extracter
+## Get started
+>TODO
 
-The `extracter` module connects to a Google Sheet and streams the lines into STDOUT in the form of comma separated CSV.
+### RA_scraper
 
-### csv2json
+The `master_venues` and `master_promoters` module collects data from ResidentAdvisor and outputs them in Excel file.
 
-The `csv2json` module converts CSV input into JSON output. Takes STDIN and dumps to STDOUT.
+`master_events` uses parts of the collected data and outputs seperate Excel file.
 
-### sqlgen
+More info on usage in folder's readme.
 
-The `sqlgen` module takes in JSON and dumps SQL lines. Take STDIN and dumps to STDOUT.
+## Tests
+>TODO
 
-## Example Usage
+## Contributing
+If you are new to this repository, please read [development doc](/docs/development.md) first. We have project documentation under [docs/documentation](/docs/documentation).
 
-    $ extracter -c <credential file> | csv2json | sqlgen -o <outputfile>
-
-### RA_scraper 
-
-The `master_venues` and `master_promoters` module collects data from ResidentAdvisor and outputs them in Excel file. 
-
-`master_events` uses parts of the collected data and outputs seperate Excel file. 
-
-More info on usage in folder's readme. 
+## License
+Bookya Sdn Bhd.
