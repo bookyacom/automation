@@ -10,15 +10,7 @@ We are following `git-flow` branching strategy.
 
 ## Understanding of folder structure
 
-### scripts
-
-### lib
-
-### docs
-
-### resources
-
-### tests
+>TODO
 
 ## How to release
 1. merge `development` to `master`.

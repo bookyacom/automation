@@ -1,0 +1,12 @@
+machine:
+  python:
+    version: 3.5.1
+
+dependencies:
+  post:
+    - pip install --user -r requirements.txt
+
+test:
+  override:
+#    - py.test test_*.py
+    - echo "No tests found"
