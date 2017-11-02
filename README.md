@@ -1,12 +1,14 @@
-# Scraper Microservice [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation)
+# Scrapers Microservice [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation)
 
-> This is Bookya Scraper microservice repository that use Python framework.
+> This is Bookya Scrapers microservice repository that use Python framework.
 
 ## Requirements
 - [Python 2.7](https://www.python.org) at least
 
 ## Get started
->TODO
+>TODO: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
+
+If you want to learn more about ``setup.py`` files, check out [Setup](https://github.com/kennethreitz/setup.py).
 
 ### RA_scraper
 
