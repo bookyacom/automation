@@ -1,13 +1,16 @@
 
-# Install Python 3 in Docker image
+# Install Python 3 Docker image
 FROM python:3
 
-# Add Project files to Docker image
-ADD scripts /
-ADD requirements.txt /
+# Create a work directory
+WORKDIR /usr/src/app
 
-# install project depandencies in Docker image
-RUN pip install -r requirements.txt
+# install project depandencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Run the project in Docker image
+# Copy working files to the image
+COPY . .
+
+# Run the project
 CMD [ "python", "./scripts/main.py" ]
