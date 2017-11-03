@@ -1,17 +1,22 @@
+# circle.yml
 machine:
   python:
-    version: 3.5.1
+    version: 2.7.3
   services:
     - docker
 
 dependencies:
+  pre:
+    - docker info
+    - docker build --rm=false -t circleci/scraper .
   post:
     - pip install --user -r requirements.txt
+  override:
+    - docker run circleci/scraper
 
 test:
   override:
     - echo "No tests found"
-
 
 deployment:
   development:
