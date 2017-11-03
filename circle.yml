@@ -1,6 +1,8 @@
 machine:
   python:
     version: 3.5.1
+  services:
+    - docker
 
 dependencies:
   post:
@@ -8,5 +10,17 @@ dependencies:
 
 test:
   override:
-#    - py.test test_*.py
     - echo "No tests found"
+
+
+deployment:
+  development:
+    branch:
+      - development
+    commands:
+      - echo "No deployment to development environment yet."
+  production:
+    branch:
+      - master
+    commands:
+      - echo "No deployment to production environment yet."
