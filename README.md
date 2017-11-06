@@ -1,4 +1,4 @@
-# Scrapers Microservice [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation) [![codecov](https://codecov.io/gh/bookyacom/automation/branch/master/graph/badge.svg?token=OP0xgyFxWU)](https://codecov.io/gh/bookyacom/automation)
+# Scrapers Microservice [![CircleCI](https://circleci.com/gh/bookyacom/automation/tree/master.svg?style=svg)](https://circleci.com/gh/bookyacom/automation/tree/master) [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation) [![codecov](https://codecov.io/gh/bookyacom/automation/branch/master/graph/badge.svg?token=OP0xgyFxWU)](https://codecov.io/gh/bookyacom/automation)
 
 > This is Bookya Scrapers microservice repository that use Python framework.
 

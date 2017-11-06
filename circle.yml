@@ -12,7 +12,7 @@ dependencies:
   post:
     - pip install --user -r requirements.txt
   override:
-    - docker run circleci/scraper
+    - docker run -d -p 2376:2376 circleci/scraper
 
 test:
   override:
