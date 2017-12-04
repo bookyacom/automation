@@ -7,7 +7,7 @@ api = Api(app)
 # Define an endpoint
 class HealthCheck(Resource):
     def get(self):
-        return {"message": "API is alive and helthy."}
+        return {"message": "API is alive and healthy."}
 
 # Route
 api.add_resource(HealthCheck, '/check')

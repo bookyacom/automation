@@ -1,0 +1,7 @@
+cr = ['Albania', 'Algeria', 'Andorra', 'Angola', 'Armenia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belarus', 'Belgium', 'Bosnia and Herzegovenia', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Egypt', 'Estonia', 'Finland', 'Georgia', 'Greece', 'Hungary', 'Iceland', 'Iran', 'Ireland', 'Israel', 'Jordan', 'Kenya', 'Kosovo', 'Kuwait', 'Latvia', 'Lebanon', 'Lithuania', 'Luxembourg', 'Macedonia', 'Malawi', 'Malta', 'Mauritius', 'Moldova', 'Monaco', 'Montenegro', 'Morocco', 'Mozambique', 'Nigeria', 'Norway', 'Oman', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Serbia', 'Seychelles', 'Slovakia', 'Slovenia', 'South Africa', 'Sweden', 'Switzerland', 'Tanzania', 'Tunisia', 'Turkey', 'Uganda', 'Ukraine', 'Uzbekistan', 'Zimbabwe']
+ra = [223,307,288,159,264,159,270,195,189,62,187,95,94,197,97,99,96,184,87,188,37,78,201,206,43,42,192,214,362,236,93,101,91,199,183,204,164,304,198,158,193,173,305,303,57,215,69,53,203,50,77,222,98,142,100,58,60,271,196,73,306,165,216,313]
+en = [105901,121442,72809,105160,122912,116397,128787,71221,128022,100075,36754,38919,41996,81719,28743,74021,110547,17279,98476,15028,112722,91743,68195,20617,13612,77960,11874,131496,114017,133735,15627,132952,97443,8285,133695,46709,92120,94943,91205,54871,76869,130181,83402,102518,103220,65664,53114,51416,52194,58345,85176,73916,11755,45132,73380,89048,120802,83833,128473,126149,96613,98486,126832,125050]
+
+
+for country, ra_id, end in zip(cr, ra, en):
+    print(f"        '{country}':"+"\n            "+ "{'ra_id': ["+f"{ra_id}],"+"\n            "+"'end': ["+f"{end}]"+"},")

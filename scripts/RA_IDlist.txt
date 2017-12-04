@@ -21,28 +21,17 @@ list_end_prom = [2077, 18054, 64102, 59998, 63256, 63416, 2597, 68209, 68639, 60
 
 /////// ID's for countries that don't have sub IDs, but only one list. ////////////
 
-#Enter RA IDs here 
-RA_ids_club = [223,307,288,159,264,159,270,195,189,62,187,95,94,197,97,99,96,184,87,188,37,78,201,206,43,42,192,214,362,236,93,101,91,199,183,204,164,304,198,158,193,173,305,303,57,215,69,53,203,50,77,222,98,142,100,58,60,271,196,73,306,165,216,313]
-
-RA_ids_prom = [223,288,264,159,195,62,187,95,94,197,97,99,96,184,87,188,37,78,201,43,42,93,101,91,199,183,164,304,158,193,173,57,69,53,203,50,77,222,98,142,100,58,60,196,73,306,165]
-#correspondant list endings here 
-list_end_clubs = [105901,121442,72809,105160,122912,116397,128787,71221,128022,100075,36754,38919,41996,81719,28743,74021,110547,17279,98476,15028,112722,91743,68195,20617,13612,77960,11874,131496,114017,133735,15627,132952,97443,8285,133695,46709,92120,94943,91205,54871,76869,130181,83402,102518,103220,65664,53114,51416,52194,58345,85176,73916,11755,45132,73380,89048,120802,83833,128473,126149,96613,98486,126832,125050]
-
-list_end_prom = [10233,40626,42027,2322,438,15202,6879,48003,61866,69596,7805,7603,61601,63895,7151,61961,5697,5199,60607,46901,4431,41821,43355,993,47108,43,43354,50126,62582,50616,66251,410,2440,35860,29749,2990,9258,35134,39415,6227,54646,64454,37353,619,10358,63096,3090]
-
-#correspondant country names here
-country_clubs = ['Albania', 'Algeria', 'Andorra', 'Angola', 'Armenia', 'Austria', 'Azerbaijan', 'Bahrain', 'Belarus', 'Belgium', 'Bosnia and Herzegovenia', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Egypt', 'Estonia', 'Finland', 'Georgia', 'Greece', 'Hungary', 'Iceland', 'Iran', 'Ireland', 'Israel', 'Jordan', 'Kenya', 'Kosovo', 'Kuwait', 'Latvia', 'Lebanon', 'Lithuania', 'Luxembourg', 'Macedonia', 'Malawi', 'Malta', 'Mauritius', 'Moldova', 'Monaco', 'Montenegro', 'Morocco', 'Mozambique', 'Nigeria', 'Norway', 'Oman', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Serbia', 'Seychelles', 'Slovakia', 'Slovenia', 'South Africa', 'Sweden', 'Switzerland', 'Tanzania', 'Tunisia', 'Turkey', 'Uganda', 'Ukraine', 'Uzbekistan', 'Zimbabwe']
-
-country_proms = ['Albania','Andorra', 'Armenia', 'Austria', 'Bahrain', 'Belgium', 'Bosnia and Herzegovenia', 'Bulgaria', 'Croatia', 'Cyprus', 'Czech Republic', 'Denmark', 'Egypt', 'Estonia', 'Finland', 'Georgia', 'Greece', 'Hungary', 'Iceland', 'Ireland', 'Israel', 'Latvia', 'Lebanon', 'Lithuania', 'Luxembourg', 'Macedonia', 'Malta', 'Mauritius', 'Monaco', 'Montenegro', 'Morocco', 'Norway', 'Poland', 'Portugal', 'Qatar', 'Romania', 'Serbia', 'Seychelles', 'Slovakia', 'Slovenia', 'South Africa', 'Sweden', 'Switzerland',  'Tunisia', 'Turkey', 'Uganda', 'Ukrain']
+#Enter RA IDs here
+RA_ids_club = []
+list_end_clubs = [
 
 ////////////////// US ///////////////////////
-RA_US_ids = [108, 109, 102, 110, 23, 310, 309, 218, 82, 111, 112, 
-			 314, 38, 315, 316, 64, 133, 113, 17, 85, 114, 90, 115, 
-			 65, 116, 117, 79, 19, 81, 103, 118, 119, 120, 47, 121, 
-			 48, 122, 8, 123, 134, 84, 104, 125, 80, 127, 105, 128, 
-			 72, 321, 319, 322, 63, 320, 106, 129, 130, 22, 46, 131, 
+RA_US_ids = [108, 109, 102, 110, 23, 310, 309, 218, 82, 111, 112,
+			 314, 38, 315, 316, 64, 133, 113, 17, 85, 114, 90, 115,
+			 65, 116, 117, 79, 19, 81, 103, 118, 119, 120, 47, 121,
+			 48, 122, 8, 123, 134, 84, 104, 125, 80, 127, 105, 128,
+			 72, 321, 319, 322, 63, 320, 106, 129, 130, 22, 46, 131,
 			 107, 132]
 
 RA_canada_ids = [230, 137, 54, 40, 74, 211, 250, 28, 39, 161]
 listend_club_ids =[11744, 122680, 4708, 9191, 2269, 50365, 131026, 85888, 21214, 15376]
-
