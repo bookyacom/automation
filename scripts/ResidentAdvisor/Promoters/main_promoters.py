@@ -1,10 +1,19 @@
 import sys
-sys.path.append('../')
+import os
 
-from promoter_ids import get_ids
+sys.path.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__))+ '/..'))
 from RA_country import scrape_country
 
-country_overview = get_ids('Argentina')
+from promoter_ids import get_ids
+
+if len(sys.argv) < 2: 
+	print('Give me the name of at least one country')
+	sys.exit()
+
+#take country names from command line 
+countries = sys.argv
+
+country_overview = get_ids(countries[1:])
 
 for country, ids in country_overview.items():
 
