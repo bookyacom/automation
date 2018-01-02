@@ -1,23 +1,23 @@
 import requests
 from soup import get_soup, get_soup_js
+from bs4 import BeautifulSoup
 
-def get_all_links (RA_id, list_end, links, club_promoter):
+def get_all_links (RA_id, list_end, links, switch):
     """
     get links from all the venues/promoters on a given site
 
     Arguments:
     RA_id: Id from city/country
     list_end:  ID of last club/promoter on the list (break point)
-    club: boolean, club or promoter?
-          1: club 0: promoter
+    switch: venue or promoter?
 
     Side effect:
     links: gets filled with RA club/promoter links
     """
-    if (club_promoter):
+    if switch == "venue":
         url = "https://www.residentadvisor.net/clubs.aspx?ai=" + str(RA_id)
         criteria = 'club.aspx?'
-    else:
+    elif switch == "promoter":
         url = "https://www.residentadvisor.net/promoters.aspx?ai=" + str(RA_id)
         criteria = 'promoter.aspx?'
 
@@ -28,41 +28,34 @@ def get_all_links (RA_id, list_end, links, club_promoter):
             links.append("https://www.residentadvisor.net" + a['href'])
         #marking the end of the list
         if str(list_end) in a['href']:
-        	break
+            break
 
-def filter_links(links):
+def active(soup):
     """
-    iterate over venue/promoter links and clean out the ones which didn't have a
-    listing in 2016 (criteria for venue/promoter not active)
+    check whether a given listing is still active or not
+    criteria: Did the club host an event in 2016/2017?
 
     Arguments:
-    links: Array of venue/promoter links
+    soup: page of venue/promoter parsed with BS
 
     Return:
-    links_filtered: Filtered list
+    True: club had an event in 2016/2017
+    False: club is not active anymore
 
     """
 
-    links_dirty = []
-    for link in links:
-        soup = get_soup_js(link)
-        #archive
-        try:
-            archive_listing = soup.find('div', {'id': 'divArchiveEvents'})
-            events = archive_listing.find_all('ul', {'class': 'ptb8'})
-            for event in events:
-                time_ = event.find('li', {'style': 'height: auto;'})
-                time = time_.get_text()
-                if '2016' in time:
-                    links_dirty.append(link)
-                    break
-                elif '2017' in time:
-                    links_dirty.append(link)
-                    break
-        except:
-            pass
+    #archive
+    try:
+        archive_listing = soup.find('div', {'id': 'divArchiveEvents'})
+        events = archive_listing.find_all('ul', {'class': 'ptb8'})
+        for event in events:
+            time_ = event.find('li', {'style': 'height: auto;'})
+            time = time_.get_text()
+            if '2016' in time:
+                return True
+            elif '2017' in time:
+                return True
 
-    # clean out duplicates
-    links_filtered = sorted(list(set(links_dirty)))
-
-    return links_filtered
+        return False
+    except:
+        return False

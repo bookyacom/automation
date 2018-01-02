@@ -3,7 +3,7 @@ from scrape_links import scrape_links_venue, scrape_links_promoter
 from RA_site_elements import write_to_file
 import os
 
-def scrape_country(country, ra_id, end, club_promoter):
+def scrape_country(country, club_promoter):
     """
     Arguments:
     country: name of country to be scraped
@@ -19,16 +19,11 @@ def scrape_country(country, ra_id, end, club_promoter):
     Creates excel file named country.xlsx with all the clubs filtered and scraped
     Creates txt file names country_venues.txt with a list of a countries clubs
     """
-    links = []
 
-    # get all the venue links from all of COUNTRY and save them to venue_links
-    for x, y in zip(ra_id, end):
-        get_all_links(x, y, links, club_promoter)
-
-    # #filter out all the venues that didn't have an event in 2016,2017
+    # filter out all the venues that didn't have an event in 2016,2017
     filtered_links = filter_links(links)
-
     file_path = '/Users/nequalstim/Desktop/bookya/temp'
+    file_name = 'USA_venues_test.txt'
 
     if (club_promoter):
         link_file = open(os.path.join(file_path, country+'_venues.txt'), 'w')
@@ -39,8 +34,7 @@ def scrape_country(country, ra_id, end, club_promoter):
     write_to_file(filtered_links, link_file)
 
     #just in case, we have to run it again to extract data, we don't have to filter all the links from scratch
-    # filtered_links = [line.rstrip('\n') for line in open(os.path.join(file_path, 'Cyprus_promoters.txt'), 'r')]
-
+    filtered_links = [line.rstrip('\n') for line in open(os.path.join(file_path, file_name), 'r')]
     #extract all the data from the venue pages and write it to excel file
     #additionally write the event links of each club to seperate file
     if(club_promoter):

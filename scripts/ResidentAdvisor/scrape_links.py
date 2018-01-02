@@ -1,6 +1,7 @@
 import os
 from soup import get_soup, get_soup_js
 from openpyxl import Workbook
+from RA_links import active
 from RA_site_elements import *
 from bs4 import BeautifulSoup
 
@@ -29,48 +30,58 @@ def scrape_links_venue(links, country):
 
     file_path = '/Users/nequalstim/Desktop/bookya/temp'
 
+    row_count = 1
     events=[]
-    for y, item in enumerate(links, start=1):
+
+    for item in links:
         soup = get_soup_js(item)
 
-        ws.cell(row = y, column = 1).value = item
+        #club had an event in 2016, 2017
+        if active(soup):
+            row_count += 1
 
-        # print out sorted (nach residentadvisorlink) list of clubs
-        clubname = soup.find('h1').string.encode('utf-8')
-        ws.cell(row = y, column = 2).value = clubname
+            ws.cell(row = row_count, column = 1).value = item
 
-        #get picture links
-        ws.cell(row = y, column = 3).value = picture(soup)
+            # print out sorted (nach residentadvisorlink) list of clubs
+            clubname = soup.find('h1').string.encode('utf-8')
+            ws.cell(row = row_count, column = 2).value = clubname
 
-        # print bio to file
-        ws.cell(row = y, column = 8).value = bio(soup)
+            #get picture links
+            ws.cell(row = row_count, column = 3).value = picture(soup)
 
-        #print adresses of clubs
-        ws.cell(row = y, column = 14).value = address(soup)
+            # print bio to file
+            ws.cell(row = row_count, column = 8).value = bio(soup)
 
+            #print adresses of clubs
+            ws.cell(row = row_count, column = 14).value = address(soup)
 
-        top_bar = soup.find('ul', {'class': 'clearfix'})
-        sites = top_bar.find_all('a', href= True)
+            try:
+                top_bar = soup.find('ul', {'class': 'clearfix'})
+                #Get capacity number
+                ws.cell(row = row_count, column = 13).value = capacity(top_bar)
 
-        #Get Website and Facebook
-        website, facebook_page = homepage(sites)
-        ws.cell(row = y, column = 9).value = website
-        ws.cell(row = y, column = 20).value = facebook_page
+                #Get contact number
+                ws.cell(row=row_count, column = 7).value = phone(top_bar)
+                
+                sites = top_bar.find_all('a', href= True)
 
-        #get email
-        ws.cell(row = y, column = 5).value = mail(sites)
+                #Get Website and Facebook
+                website, facebook_page = homepage(sites)
+                ws.cell(row = row_count, column = 9).value = website
+                ws.cell(row = row_count, column = 20).value = facebook_page
 
-        #Get capacity number
-        ws.cell(row = y, column = 13).value = capacity(top_bar)
+                #get email
+                ws.cell(row = row_count, column = 5).value = mail(sites)
+            except: 
+                pass
 
-        #Get contact number
-        ws.cell(row=y, column = 7).value = phone(top_bar)
+            #extract all the event links from venues
+            get_events(soup, events)
 
-        #extract all the event links from venues
-        # put a space in empty cells for nicer formatting in excel
-        get_events(soup, events)
-
-        placeholders(ws,y)
+            # put a space in empty cells for nicer formatting in excel
+            placeholders(ws,row_count)
+        else: 
+            pass
 
     events_file = open(os.path.join(file_path, country+'_event.txt'), 'w')
     write_to_file(events, events_file)
@@ -80,7 +91,6 @@ def scrape_links_promoter(links, country):
 
     """
     The brain of the scraper. Takes in link and calls all individual scraper functions.
-
 
     Arguments:
     links: array of residentadvisor links
@@ -101,41 +111,45 @@ def scrape_links_promoter(links, country):
 
     file_path = '/Users/nequalstim/Desktop/bookya/temp'
 
+    row_count = 1
     events=[]
-    for y, item in enumerate(links, start=1):
+    for item in links:
         soup = get_soup_js(item)
 
-        #RA_link
-        ws.cell(row = y, column = 3).value = item
+        if active(soup):
+            #RA_link
+            ws.cell(row = y, column = 3).value = item
 
+            promoter_name = soup.find('h1').string.encode('utf-8')
+            ws.cell(row = y, column = 1).value = promoter_name
 
-        promoter_name = soup.find('h1').string.encode('utf-8')
-        ws.cell(row = y, column = 1).value = promoter_name
+            #get picture links
+            ws.cell(row = y, column = 7).value = picture(soup)
 
-        #get picture links
-        ws.cell(row = y, column = 7).value = picture(soup)
+            # print bio to file
+            ws.cell(row = y, column = 8).value = bio(soup)
 
-        # print bio to file
-        ws.cell(row = y, column = 8).value = bio(soup)
+            top_bar = soup.find('ul', {'class': 'clearfix'})
+            sites = top_bar.find_all('a', href= True)
 
-        top_bar = soup.find('ul', {'class': 'clearfix'})
-        sites = top_bar.find_all('a', href= True)
+            #Get Website and Facebook
+            website, facebook_page = homepage(sites)
+            ws.cell(row = y, column = 5).value = website
+            ws.cell(row = y, column = 6).value = facebook_page
 
-        #Get Website and Facebook
-        website, facebook_page = homepage(sites)
-        ws.cell(row = y, column = 5).value = website
-        ws.cell(row = y, column = 6).value = facebook_page
+            #get email
+            ws.cell(row = y, column = 10).value = mail(sites)
 
-        #get email
-        ws.cell(row = y, column = 10).value = mail(sites)
+            placeholders = [2, 4, 9]
+            for column in placeholders:
+                ws.cell(row = y, column = column).value = " "
+            #extract all the event links from venues
+            # put a space in empty cells for nicer formatting in excel
+            get_events(soup, events)
+            events_filtered = list(set(events))
 
-        placeholders = [2, 4, 9]
-        for column in placeholders:
-            ws.cell(row = y, column = column).value = " "
-        #extract all the event links from venues
-        # put a space in empty cells for nicer formatting in excel
-        get_events(soup, events)
-        events_filtered = list(set(events))
+        else:
+            pass
 
     events_file = open(os.path.join(file_path, country+'_event.txt'), 'w')
     write_to_file(events_filtered, events_file)
@@ -152,7 +166,7 @@ def scrape_links_event(links):
 
     problem_artists = []
 
-    for y, link in enumerate(links, start=1):
+    for y, link in enumerate(links, start=2):
         soup = get_soup(link)
 
         ws.cell(row=y, column=1).value = name(soup)
@@ -270,48 +284,48 @@ def set_up_promoter (ws):
 
 def set_up_event (ws):
 
-	"""
+    """
     Initialize the Excel File with the Header
 
     Arguments:
-	ws: active Workbook
+    ws: active Workbook
 
     Return:
-	None
+    None
     """
 
-	ws.cell(row=1, column = 1).value = "display_name"
-	ws.cell(row=1, column = 2).value = "profile_photo"
-	ws.cell(row=1, column = 3).value = "cover_photo"
-	ws.cell(row=1, column = 4).value = "email"
-	ws.cell(row=1, column = 5).value = "public_email"
-	ws.cell(row=1, column = 6).value = "public_contact_number"
-	ws.cell(row=1, column = 7).value = "search_artist"
-	ws.cell(row=1, column = 8).value = "header_text"
-	ws.cell(row=1, column = 9).value = "contact_number"
-	ws.cell(row=1, column = 10).value = "bio"
-	ws.cell(row=1, column = 11).value = "websites"
-	ws.cell(row=1, column = 12).value = "genre_list"
-	ws.cell(row=1, column = 13).value = "start_date"
-	ws.cell(row=1, column = 14).value = "end_date"
-	ws.cell(row=1, column = 15).value = "ticket_price"
-	ws.cell(row=1, column = 16).value = "ticket_currency"
-	ws.cell(row=1, column = 17).value = "contact_person"
-	ws.cell(row=1, column = 18).value = "promoter_name"
-	ws.cell(row=1, column = 19).value = "promoter_url"
-	ws.cell(row=1, column = 20).value = "venue_name"
-	ws.cell(row=1, column = 21).value = "venue_url"
-	ws.cell(row=1, column = 22).value = "artist_names"
-	ws.cell(row=1, column = 23).value = "artist_urls"
-	ws.cell(row=1, column = 24).value = "facebook_page"
-	ws.cell(row=1, column = 25).value = "beatport_dj"
-	ws.cell(row=1, column = 26).value = "instagram"
-	ws.cell(row=1, column = 27).value = "lastfm"
-	ws.cell(row=1, column = 28).value = "mixcloud"
-	ws.cell(row=1, column = 29).value = "partyflock"
-	ws.cell(row=1, column = 30).value = "songkick"
-	ws.cell(row=1, column = 31).value = "soundcloud"
-	ws.cell(row=1, column = 32).value = "spotify"
-	ws.cell(row=1, column = 33).value = "twitter"
-	ws.cell(row=1, column = 34).value = "youtube_channel"
-	ws.cell(row=1, column = 35).value = "bandsintown"
+    ws.cell(row=1, column = 1).value = "display_name"
+    ws.cell(row=1, column = 2).value = "profile_photo"
+    ws.cell(row=1, column = 3).value = "cover_photo"
+    ws.cell(row=1, column = 4).value = "email"
+    ws.cell(row=1, column = 5).value = "public_email"
+    ws.cell(row=1, column = 6).value = "public_contact_number"
+    ws.cell(row=1, column = 7).value = "search_artist"
+    ws.cell(row=1, column = 8).value = "header_text"
+    ws.cell(row=1, column = 9).value = "contact_number"
+    ws.cell(row=1, column = 10).value = "bio"
+    ws.cell(row=1, column = 11).value = "websites"
+    ws.cell(row=1, column = 12).value = "genre_list"
+    ws.cell(row=1, column = 13).value = "start_date"
+    ws.cell(row=1, column = 14).value = "end_date"
+    ws.cell(row=1, column = 15).value = "ticket_price"
+    ws.cell(row=1, column = 16).value = "ticket_currency"
+    ws.cell(row=1, column = 17).value = "contact_person"
+    ws.cell(row=1, column = 18).value = "promoter_name"
+    ws.cell(row=1, column = 19).value = "promoter_url"
+    ws.cell(row=1, column = 20).value = "venue_name"
+    ws.cell(row=1, column = 21).value = "venue_url"
+    ws.cell(row=1, column = 22).value = "artist_names"
+    ws.cell(row=1, column = 23).value = "artist_urls"
+    ws.cell(row=1, column = 24).value = "facebook_page"
+    ws.cell(row=1, column = 25).value = "beatport_dj"
+    ws.cell(row=1, column = 26).value = "instagram"
+    ws.cell(row=1, column = 27).value = "lastfm"
+    ws.cell(row=1, column = 28).value = "mixcloud"
+    ws.cell(row=1, column = 29).value = "partyflock"
+    ws.cell(row=1, column = 30).value = "songkick"
+    ws.cell(row=1, column = 31).value = "soundcloud"
+    ws.cell(row=1, column = 32).value = "spotify"
+    ws.cell(row=1, column = 33).value = "twitter"
+    ws.cell(row=1, column = 34).value = "youtube_channel"
+    ws.cell(row=1, column = 35).value = "bandsintown"
