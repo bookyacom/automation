@@ -49,11 +49,11 @@ def scrape_artists(artists):
 
         #viberate doesn't have lastfm listed, so we scrape it for all artists
         ws.cell(row=row, column=7).value = lastfm(artist)
+        ws.cell(row=row, column=3).value = record_labels(artist)
 
         try:
             viberate(artist, ws, row)
         except:
-            ws.cell(row=row, column=3).value = record_labels(artist)
             ws.cell(row=row, column=4).value = facebook(artist)
             ws.cell(row=row, column=6).value = instagram(artist)
             ws.cell(row=row, column=9).value = partyflock(artist)
