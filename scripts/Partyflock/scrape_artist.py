@@ -1,5 +1,6 @@
 from soup import get_soup_js
 from socials import *
+from openpyxl import Workbook
 
 partyflock_url = 'https://partyflock.nl/artist/'
 
@@ -36,23 +37,10 @@ def get_information(artist_urls):
     for row, artist_url in enumerate(artist_urls, start=2): 
         artist_page = get_soup_js(partyflock_url + artist_url)
 
-        # Get all the social information
-        presence_row = artist_page.find('tr', {'class': 'presencerow'})
-        social_links = presence_row.find_all('a', title=True)
-        for link in social_links:
-            social_info = link['title']
+        # get_socials(artist_page, ws, row)
 
-            if 'facebook' in social_info:
-                ws.cell(row=row, column = 4).value = facebook(social_info)
-            elif 'soundcloud' in social_info:
-                ws.cell(row=row, column = 11).value = soundcloud(social_info)
-            elif 'twitter' in social_info:
-                ws.cell(row=row, column = 13).value = twitter(social_info)
-            elif 'youtube' in social_info:
-                ws.cell(row=row, column = 14).value = youtube(social_info)
-            elif 'instagram' in social_info:
-                ws.cell(row=row, column = 6).value = instagram(social_info)
-            elif 'spotify' in social_info:
-                ws.cell(row=row, column = 12).value = spotify(social_info)
+        # get_website(artist_page, ws, row)
+
+        get_bio(artist_page, ws, row)
 
     wb.save(file_path + '/Partyflock.xlsx')
