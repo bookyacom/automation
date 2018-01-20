@@ -5,15 +5,23 @@ from scrape_artist import get_information
 
 file_path = '/Users/nequalstim/Desktop/partyflock'
 
-if len(sys.argv) < 3: 
-    print('USAGE: [file_name] [start index] [stop index]')
+mode = sys.argv[1]
+
+#mode 1 all artist links will be freshly scraped
+if mode == "1":
+    arist_urls = get_artist_links()
+
+#mode 2 user already gives in file with urls
+elif mode == "2":
+    if len(sys.argv) < 3: 
+        print('USAGE: [mode=2] [file_name]')
+        sys.exit()
+
+    file_name = sys.argv[1]
+    artist_urls = [line.rstrip('\n') for line in open(os.path.join(file_path, file_name), 'r')]
+else:
+    print('unknown mode')
+    print('USAGE: [mode] ([file_name])')
     sys.exit()
 
-
-file_name = sys.argv[1]
-start  = int(sys.argv[2])
-end = int(sys.argv[3])
-
-artist_urls = [line.rstrip('\n') for line in open(os.path.join(file_path, file_name), 'r')]
-
-get_information(artist_urls[start:end])
+get_information(artist_urls)

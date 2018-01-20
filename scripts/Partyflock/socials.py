@@ -1,6 +1,6 @@
 from soup import get_soup
 import re
-import cleaner
+import url_cleaner
 
 def name (artist_page):
     """

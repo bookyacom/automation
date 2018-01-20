@@ -18,6 +18,11 @@ The `master_venues` and `master_promoters` module collects data from ResidentAdv
 
 More info on usage in folder's readme.
 
+### Partyflock scraper
+This scraper will collect all the information (biography, socials, labels etc.) of DJs on Partyflock that had an event in 2017, 2018 and are not already listed in the Bookya database.
+
+More info on usage in folder's readme.
+
 ## Tests
 >TODO
 
