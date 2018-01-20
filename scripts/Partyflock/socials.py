@@ -1,3 +1,25 @@
+from soup import get_soup
+import re
+import cleaner
+
+def name (artist_page):
+    """
+    Simply return the name of an artist
+
+    Argument:
+    artist_page: page of an artist parsed with BS
+
+    Return:
+    name: name of the artist
+    """
+
+    try:
+        name_ = artist_page.find('h2', {'itemprop': 'name'})
+        name = name_.getText()
+        return name
+    except:
+        return ' '
+
 def get_socials(artist_page, ws, row):
     """
     Get all the social media data from Partyflock for given artist
@@ -12,95 +34,134 @@ def get_socials(artist_page, ws, row):
 
     Return: None
     """
+    try: 
+        presence_row = artist_page.find('tr', {'class': 'presencerow'})
+        social_links = presence_row.find_all('a', title=True)
+        
+        for link in social_links:
+            social_info = link['title']
 
-    presence_row = artist_page.find('tr', {'class': 'presencerow'})
-    social_links = presence_row.find_all('a', title=True)
+            #check what kind of link it is and clean it from www, https:// etc.
+            if 'facebook' in social_info:
+                ws.cell(row=row, column = 4).value = facebook(social_info)
+            elif 'soundcloud' in social_info:
+                ws.cell(row=row, column = 11).value = soundcloud(social_info)
+            elif 'twitter' in social_info:
+                ws.cell(row=row, column = 13).value = twitter(social_info)
+            elif 'youtube' in social_info:
+                ws.cell(row=row, column = 14).value = youtube(social_info)
+            elif 'instagram' in social_info:
+                ws.cell(row=row, column = 6).value = instagram(social_info)
+            elif 'spotify' in social_info:
+                ws.cell(row=row, column = 12).value = spotify(social_info)
+    except:
+        pass
+
+def website(artist_page):
+    """
+    Get the website of a given artist on Partyflock
+
+    Arguments:
+    artist_page: page of artist parsed with BS
+
+    Return: 
+    site: website of artist
+    """
+    try: 
+        table = artist_page.find('table', {'class':'nodyn deflist vtop'})
+        site = table.find('img', {'alt': 'Site'})
+        site = site['title']
+        return site
+    except:
+        return ' '
+
+def genres(artist_page):
+    """
+    Get the genres of a given artist page
+
+    Arguments:
+    artist_page: page of artist parsed with BS
     
-    for link in social_links:
-        social_info = link['title']
+    Return:
+    genres: list of genres
 
-        if 'facebook' in social_info:
-            ws.cell(row=row, column = 4).value = facebook(social_info)
-        elif 'soundcloud' in social_info:
-            ws.cell(row=row, column = 11).value = soundcloud(social_info)
-        elif 'twitter' in social_info:
-            ws.cell(row=row, column = 13).value = twitter(social_info)
-        elif 'youtube' in social_info:
-            ws.cell(row=row, column = 14).value = youtube(social_info)
-        elif 'instagram' in social_info:
-            ws.cell(row=row, column = 6).value = instagram(social_info)
-        elif 'spotify' in social_info:
-            ws.cell(row=row, column = 12).value = spotify(social_info)
-
-def get_website(artist_page, ws, row):
     """
+    try:
+        genres = []
+        table = artist_page.find('table', {'class':'nodyn deflist vtop'})
+        for block in table.find_all('a', href=True):
+            if "/party/" in block['href']:
+                genres.append(block.getText())
+
+        return ','.join(genres)
+    except:
+        return ' '
+
+def email(artist_page):
     """
+    Get the email of a given artist page
 
+    Arguments:
+    artist_page: page of artist parsed with BS
+    
+    Return:
+    
 
-def get_bio(artist_page, ws, row):
+    """
+    try:
+        table = artist_page.find('table', {'class':'nodyn deflist vtop'})
+        for block in table.find_all('a', href=True):
+            if re.search('mailto', block['href']):
+                mail = block.getText()
+                return mail
+        return ' '
+    except:
+        return ' '
+
+def bio(artist_page):
     """
     Get the Bio of a given artist page on Partyflock
+    
+    Arguments:
+    artist_page: page of artist parsed with BS
+
+    Return: 
+    bio: biography of artist
 
 
     """
-    #TODO: Cut out Biografie and Date
     try: 
         bio_ = artist_page.find('div', {'id': 'biobody'} )
         bio = bio_.getText()
-        print('bio 1')
+        return bio
     except: 
         try:
             bio_ = artist_page.find('article', {'data-partyflock-type': 'bio'})
-            bio = bio_.getText()
-            print(bio)
+            bio_ = bio_.getText()
+            #Regex to delete everything up to a year date 
+            # --> Beginning of Biographie is "Biographie 23. may 2018"
+            bio = re.sub(r'.+\d{4}', '', bio_)
+            return bio.strip()
         except:
-            pass
+            return ' '
 
-def clean_url(url, site):
+def labels(artist):
     """
-    Brings string into right format for Excel file to import 
-    (free of https://, www.facebook.com etc., viberate characteristics  )
-    Arguments:
-    url: url ot be cleaned
-    site: site name which will get removed
-    Return:
-    clean: cleaned string
+    Get all recordlabels for a given artist from labelsbase.net
     """
-    http  = 'http://'+site
-    https = 'https://'+site
-    http_www  = 'http://www.'+site
-    https_www = 'https://www.'+site
+    labelbase_url = 'https://labelsbase.net/?a='
 
-    clean = url.replace(http, '').replace(https, '').replace(https_www, '').replace(http_www, '')
-    return clean.strip()
+    artist_query = re.sub('[&]', '%26', artist)
+    artist_qurey = re.sub('[ ]', '+', artist_query)
+    url = labelbase_url + artist_query
+    soup = get_soup(url)
+    labels = []
+    try:
+        for label_div in soup.find_all('div', {'class': 'row label-item'}):
+            label_info = label_div.find_all('a', href=True)
+            labels.append(label_info[1].getText())
 
-def facebook (url):
-    fb_link = url.replace('facebookpage: ', '')
-    fb_link = clean_url(fb_link, 'facebook.com/')
-    return fb_link
+        return ','.join(labels)
 
-def soundcloud (url):
-    sc_link = url.replace('soundcloud: ', '')
-    sc_link = clean_url(sc_link, 'soundcloud.com/')
-    return sc_link
-
-def twitter (url):
-    twitter_link = url.replace('twitter: ', '')
-    twitter_link = clean_url(twitter_link, 'twitter.com/')
-    return twitter_link
-
-def youtube (url):
-    youtube_link = url.replace('youtube: ', '')
-    youtube_link = clean_url(youtube_link, 'youtube.com/')
-    return youtube_link
-
-def instagram (url):
-    insta_link = url.replace('instagram: ', '')
-    insta_link = clean_url(insta_link, 'instagram.com/')
-    return insta_link
-
-def spotify (url):
-    spotify_link = url.replace('spotify: ', '')
-    spotify_link = clean_url(spotify_link, 'open.spotify.com/')
-    return spotify_link
-
+    except:
+        return ' '
