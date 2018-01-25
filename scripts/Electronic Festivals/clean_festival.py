@@ -23,7 +23,7 @@ def clean_country(festival):
     return festival
 
 def clean_city(festival):
-     """
+    """
     Removes country name of a festival 
 
     Arguments:
@@ -34,8 +34,7 @@ def clean_city(festival):
 
     Exmpl: Lollapalooza Argentina -> Lollapalooza
     """
-
-    cities =[]
+    cities = ['Moscow', 'London', 'St Petersburg', 'Berlin', 'Madrid', 'Roma', 'Kiev', 'Paris', 'Bucharest', 'Budapest', 'Hamburg', 'Minsk', 'Warsaw', 'Belgrade', 'Vienna', 'Kharkov', 'Barcelona', 'Novosibirsk', 'Nizhny Novgorod', 'Milan', 'Ekaterinoburg', 'Munich', 'Prague', 'Samara', 'Omsk', 'Sofia', 'Dnepropetrovs','Kazan', 'Ufa', 'Chelyabinsk', 'Donetsk', 'Naples', 'Birmingham', 'Perm', 'Rostov-na-Donu', 'Odessa', 'Volgograd', 'Cologne', 'Turin', 'Voronezh', 'Krasnoyarsk','Saratov','Zagreb','Zaporozhye','Lódz','Marseille','Riga','Lvov','Athens','Salonika','Stockholm','Kraków','Valencia','Amsterdam','Leeds','Tolyatti','Kryvy Rig','Sevilla','Palermo','Ulyanovsk','Kishinev','Genova','Izhevsk','Frankfurt am Main','Krasnodar','Breslau','Glasgow','Yaroslave','Khabarovsk','Vladivostok','Zaragoza','Essen','Rotterdam','Irkutsk','Dortmund','Stuttgart','Barnaul','Vilnius','Poznan','Düsseldorf','Novokuznetsk','Lisbon','Lisboa','Helsinki','Málaga','Bremen','Sheffield','Sarajevo','Penza','Ryazan','Orenburg','Naberezhnye Tchelny','Duisburg','Lipetsk','Hannover','Mykolaiv','Tula','Oslo','Tyumen','Copenhagen','Kemerovo','Mariupol','Leipzig','Nuremberg','Bradford','Astrakhan','Dublin','Tomsk','Dresden','Gomel','Liverpool','Anvers','Lugansk','Kirov','Gothenburg','Cheboksary','Ivanovo','Danzig','Bryansk','Tver','Edinburgh','Bratislava','s-Gravenhage','Kursk','Manchester','SKOPLJE','Magnitogorsk','Kaliningrad','Tallin','Szczecin','Lyon','Kaunas','Bristol','Nizhny Tagil','Bochum','Kirklees','Makeyevka','Bydgoszcz','Bologna','Brno','Vinnutsya','Firenze','Murmansk','Ulan-Ude','Wuppertal','Arkhangelsk','Kurgan','Toulouse','Lublin','Mogilev','Kherson','Las Palmas','Smolensk','Bilbao','Sevastopol','Murcia','Fife','Iasi','Katowice','Nice','Stavropol','Constanta','Orel','Catania','Vitebsk','Kaluga','Belgorod','Zürich','Simferopol','Bari','Vladimir','Sochi','Cluj-Napoca','Makhachkala','Galati','Wirral','North Lanarkshire','Timisoara','Cherepovets','Ostrava','Bielefeld','Wakefield','Valladolid','Saransk','Cardiff','Brasov','Craiova','Poltava','Tambov','Dudley','Wigan','Chita','Vladikavkaz','East Riding of Yorkshire','Cherkassy','Mannheim','Córdoba','South Lanarkshire','Chernigov','Coventry','Gorlovka','Palma de Mallorca','Grodno','Bonn','Vologda','Varna','Venezia','Zhitomir','Belfast','Sumy','Leicester','Komsomolsk-na-Amure','Sunderland','Sandwell','Doncaster','Stockport','Sefton','Kostroma','Vigo','Århus','Brest','Volzhsky','Taganrog','Bialystok','Nottingham','Petrozavodsk','Newcastle-upon-Tyne','Gelsenkirchen','Bratsk','Dzerzhinsk ','Surgut','Karlsruhe','Orsk','Porto','Alicante','Dneprodzerzhinsk','Wiesbaden','Kirovograd','Kingston-upon-Hull','Novi Sad','Bolton','Angarsk','Sterlitamak','Münster','Gijón','Ljubljana','Mönchengladbach','Chemnitz','Messina','Walsall','Chernovtsy','Khmelnitsky ','Malmö','Czestochowa','Plymouth','Hospitalet de Llobregat','Rotherham','Augsburg','Stoke-on-Trent','Halle','Verona','Gdynia','Strasbourg','Ploiesti','Nis','Ioshkap-Ola','Braunschweig','Nantes','Wolverhampton','Rovno','Tirana','Aachen','Sosnowiec','Granada','Kosice','Krefeld','Rybinsk','La Coruña','Krementchug','Nizhenvartovsk','Graz','Prokopyevsk','Severodvinsk','South Gloucestershire','Magdeburg','Ivano-Frankovsk','Kiel','Braila','Derby','Utrecht','Ternopol','Radom','Gent','Swansea','Naltchik','Syktivkar','Velikiy Novgorod','Salford','Bergen','Aberdeenshire', 'Socal', 'Miami', 'Sao Paulo', 'Las Vegas','Sopron', 'Perth', 'Sydney', 'Eindhoven', 'Melbourne', 'Auckland', 'Edinburgh', 'San Bernardino', 'Dallas', 'Cape Town', 'New York City', 'Johannesburg', 'Jakarta', 'Brisbane', 'San Francisco', 'Fremantle','Arizona', 'Victoria', 'Nijmegen', 'Tilburg', 'Leysin', 'Groningen', 'Los Angeles', 'Bogotà', 'Tel Aviv', 'Panama City', 'Reykjavík', 'Hong Kong','Lima', 'Cardiff', 'Bendigo', 'Indanapolis', 'Adelaide', 'Columbus', 'Kalamazoo', 'Pittsburgh', 'Saarbrücken', 'Maastricht', 'Brooklyn', 'Denver', 'Detroit', 'Toronto', 'Montreal', 'Buenos Aires', 'Beijing', 'Shanghai', 'Kiel', 'Mumbai', 'Hyderabad', 'Delhi', 'Breda', 'Vermont', 'Brasilia', 'Canberra' ]
 
     for city in cities:
         if re.search(re.escape(city), festival):
@@ -57,6 +56,7 @@ def clean_festival(festival):
     """
 
     festival_req = festival.replace('festival', '')
+    festival_req = festival_req.replace('Festival', '')
     festival_req = festival_req.replace('-', '')
     festival_req = festival_req.replace('Winter', '')
     festival_req = festival_req.replace('Summer', '')
