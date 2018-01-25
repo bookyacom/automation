@@ -3,7 +3,7 @@ import requests
 
 #partfyflock url 
 partyflock_url = 'https://partyflock.nl/artist/'
-api_url = 'https://admin-api.bookya.com/admin/check?'
+api_url = 'https://admin-api.bookya.com/admin/check'
 
 
 def get_artist_links():
@@ -53,10 +53,3 @@ def artist_on_bookya(artist):
             return False
     except:
         return False
-
-
-
-
-
-
-
