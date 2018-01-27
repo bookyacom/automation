@@ -9,4 +9,3 @@ if len(sys.argv) < 2:
 frame = read_excel(sys.argv[1])
 festivals = frame.values
 matching(festivals)
-

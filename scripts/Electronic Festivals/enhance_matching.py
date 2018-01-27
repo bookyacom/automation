@@ -28,16 +28,42 @@ def check_db(festival, result_db):
     country = festival[19]
 
     # No matching in the database
-    if not result_db:
+    if not result_db['profiles']:
         del festival[15]
         del festival[16]
         return False
-    else: 
-        return True
+    
+    for result in result_db['profiles']:
+        if fuzz.partial_ratio(website, result['website']) > 85:
+            festival[15] = result['name']
+            festival[16] = result['bookya_url']
+            return True
+
+    for result in result_db['profiles']:
+        if fuzz.partial_ratio(name, result['name']) > 90:
+            festival[15] = result['name']
+            festival[16] = result['bookya_url']
+            return True
+        for concept in result['concepts']:# maybe cut string at comma here 
+            if fuzz.partial_ratio(name, concept) > 90:
+                festival[15] = result['name']
+                festival[16] = result['bookya_url']
+                return True
+
+    for result in result_db['profiles']:
+        if fuzz.partial_ratio(country, result['country']) > 90:
+            festival[15] = result['name']
+            festival[16] = result['bookya_url']
+            return True
+
 
 def matching(festivals):
     """
     Check bookya DB for matching promoter and fill into Excel sheet
+    1. Clean the festival name of any string that might hinder request
+    2. Make request to bookya DB 
+    3. Check if result is a match with the inout festival
+    4. Write to match or no match Excel file
 
     Arguments: 
     festivals: array with festival info
