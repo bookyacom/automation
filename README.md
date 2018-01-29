@@ -1,29 +1,28 @@
-# automation [![Dependency Status](https://gemnasium.com/badges/4fb0d3a6d4a883ba5ba81cb7aed21741.svg)](https://gemnasium.com/github.com/bookyacom/automation)
+# Scrapers Microservice [![CircleCI](https://circleci.com/gh/bookyacom/automation.svg?style=shield&circle-token=66909009a6cbe9867570d6a0b57ac9a3a478cf2e)](https://circleci.com/gh/bookyacom/automation) [![Dependency Status](https://gemnasium.com/badges/46e9471bd3124a106fcccc72daa51302.svg)](https://gemnasium.com/github.com/bookyacom/automation) [![codecov](https://codecov.io/gh/bookyacom/automation/branch/master/graph/badge.svg?token=OP0xgyFxWU)](https://codecov.io/gh/bookyacom/automation)
 
-Automated scripts repository
+> This is Bookya Scrapers microservice repository that use Python framework.
 
-## Modules
+## Requirements
+- [Python 2.7](https://www.python.org) at least
 
-### extracter
+## Get started
+>TODO: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
 
-The `extracter` module connects to a Google Sheet and streams the lines into STDOUT in the form of comma separated CSV.
+If you want to learn more about ``setup.py`` files, check out [Setup](https://github.com/kennethreitz/setup.py).
 
-### csv2json
+### RA_scraper
 
-The `csv2json` module converts CSV input into JSON output. Takes STDIN and dumps to STDOUT.
+The `master_venues` and `master_promoters` module collects data from ResidentAdvisor and outputs them in Excel file.
 
-### sqlgen
+`master_events` uses parts of the collected data and outputs seperate Excel file.
 
-The `sqlgen` module takes in JSON and dumps SQL lines. Take STDIN and dumps to STDOUT.
+More info on usage in folder's readme.
 
-## Example Usage
+## Tests
+>TODO
 
-    $ extracter -c <credential file> | csv2json | sqlgen -o <outputfile>
+## Contributing
+If you are new to this repository, please read [development doc](/docs/development.md) first. We have project documentation under [docs/documentation](/docs/documentation).
 
-### RA_scraper 
-
-The `master_venues` and `master_promoters` module collects data from ResidentAdvisor and outputs them in Excel file. 
-
-`master_events` uses parts of the collected data and outputs seperate Excel file. 
-
-More info on usage in folder's readme. 
+## License
+Bookya Sdn Bhd.

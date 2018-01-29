@@ -1,0 +1,31 @@
+# circle.yml
+machine:
+  python:
+    version: 3.5.1
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - docker info
+    - docker build --rm=false -t circleci/scraper .
+  post:
+    - pip install --user -r requirements.txt
+  override:
+    - docker run -d -p 2376:2376 circleci/scraper
+
+test:
+  override:
+    - echo "No tests found"
+
+deployment:
+  development:
+    branch:
+      - development
+    commands:
+      - echo "No deployment to development environment yet."
+  production:
+    branch:
+      - master
+    commands:
+      - echo "No deployment to production environment yet."
