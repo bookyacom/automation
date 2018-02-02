@@ -30,14 +30,14 @@ def write_to_excel(ws, festival, row):
     ws.cell(row=row, column=21).value = festival[20]
     ws.cell(row=row, column=35).value = festival[34]
 
-    placeholders = [2,3,4,5,6,7,14,15,16,17,20,24,25,26,27,28,29,30,31,32,33,34,35,36]
+    placeholders = [2,3,4,5,6,7,14,15,18,22,23,24,25,26,27,28,29,30,31,32,33,34]
     for col in placeholders:
         ws.cell(row=row, column=col).value = ' '
 
 
 def initList (ws):
     #initialitze table with values
-    ws.cell(row=1, column = 1).value = "dispay_name"
+    ws.cell(row=1, column = 1).value = "display_name"
     ws.cell(row=1, column = 2).value = "profile_photo"
     ws.cell(row=1, column = 3).value = "email"
     ws.cell(row=1, column = 4).value = "public_email"
@@ -50,7 +50,7 @@ def initList (ws):
     ws.cell(row=1, column = 11).value = "start_date"
     ws.cell(row=1, column = 12).value = "month"
     ws.cell(row=1, column = 13).value = "year"
-    ws.cell(row=1, column = 14).value = "ticket_currency"
+    ws.cell(row=1, column = 14).value = "ticket_price"
     ws.cell(row=1, column = 15).value = "contact_person"
     ws.cell(row=1, column = 16).value = "promoter_name"
     ws.cell(row=1, column = 17).value = "promoter_url"
@@ -91,12 +91,13 @@ def create_excel(name):
     ws.title = name
     return ws, wb
 
-def request_db(festival):
+def request_db(request, type_):
     """
-    Returns matchings of a festival name in the Bookya DB
+    Returns matchings of a request in the Bookya DB
 
     Arugments:
     festival: name of festival
+    type_: promoter, artist, event?
 
     Return: 
     matchings: array of matches
@@ -104,10 +105,15 @@ def request_db(festival):
 
     api_url = "https://admin-api.bookya.com/admin/check?"
 
-    festival_req = festival.encode('utf8')
-    parameters = {"name": festival_req, "type": "promoter"}
+    festival_req = request.encode('utf8')
+    parameters = {"name": festival_req, "type": type_}
     response = requests.get(api_url, params=parameters)
     data = response.json()
 
     return data
 
+def write_to_file(array, fp):
+    for item in array:
+        fp.write(item+'\n')
+
+    fp.close()
