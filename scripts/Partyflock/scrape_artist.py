@@ -102,7 +102,7 @@ def get_information(artist_urls):
         artist_page = get_soup_js(partyflock_url + artist_url)
         if artist_2017(artist_page):
             artist = name(artist_page)
-            if artist_on_bookya(artist):
+            if not artist_on_bookya(artist):
                 ws.cell(row=row_count, column = 9).value = artist_url
 
                 get_socials(artist_page, ws, row_count)
