@@ -3,6 +3,7 @@ from soup import get_soup_js
 from socials import *
 from openpyxl import Workbook
 from links import artist_on_bookya
+from bs4 import BeautifulSoup
 
 partyflock_url = 'https://partyflock.nl'
 
@@ -50,7 +51,7 @@ def artist_2017(artist_page):
     """
     try:
         artist_agenda = artist_page.find('div', {'class': 'artist agenda box'})
-        try: 
+        try:
             time_ = artist_agenda.find('time', datetime=True)
             time = str(time_['datetime'])
             if re.search('2018', time):
@@ -97,11 +98,11 @@ def get_information(artist_urls):
 
     init_artist_profiles(ws)
     row_count = 2
-    for artist_url in artist_urls: 
+    for artist_url in artist_urls:
         artist_page = get_soup_js(partyflock_url + artist_url)
         if artist_2017(artist_page):
             artist = name(artist_page)
-            if not artist_on_bookya(artist):
+            if artist_on_bookya(artist):
                 ws.cell(row=row_count, column = 9).value = artist_url
 
                 get_socials(artist_page, ws, row_count)
@@ -123,6 +124,6 @@ def get_information(artist_urls):
 
                 row_count += 1
 
-        else: 
+        else:
             pass
     wb.save(file_path + '/Partyflock.xlsx')

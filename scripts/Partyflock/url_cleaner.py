@@ -34,7 +34,7 @@ Return:
 
 def facebook(url):
     fb_link = url.replace('facebookpage: ', '')
-    fb_link = url.replace('facebook: ', '')
+    fb_link = fb_link.replace('facebook: ', '')
     fb_link = clean_url(fb_link, 'facebook.com/')
     return fb_link
 

@@ -1,7 +1,1 @@
-/artist/65383:Akwasi
-/artist/48559:Luc-Mast
-/artist/44832:Greatski
-/artist/53611:Goshva
-/artist/104039:Javier-Portilla
 /artist/42905:Scuba
-/artist/102203:Emilian-Wonk
