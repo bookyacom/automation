@@ -1,6 +1,7 @@
 from soup import get_soup
 import re
-import url_cleaner
+from url_cleaner import *
+import sys
 
 def name (artist_page):
     """
@@ -37,10 +38,8 @@ def get_socials(artist_page, ws, row):
     try: 
         presence_row = artist_page.find('tr', {'class': 'presencerow'})
         social_links = presence_row.find_all('a', title=True)
-        
         for link in social_links:
             social_info = link['title']
-
             #check what kind of link it is and clean it from www, https:// etc.
             if 'facebook' in social_info:
                 ws.cell(row=row, column = 4).value = facebook(social_info)
@@ -55,6 +54,7 @@ def get_socials(artist_page, ws, row):
             elif 'spotify' in social_info:
                 ws.cell(row=row, column = 12).value = spotify(social_info)
     except:
+        print("Unexpected error:", sys.exc_info()[0])
         pass
 
 def website(artist_page):
@@ -149,15 +149,15 @@ def labels(artist):
     """
     Get all recordlabels for a given artist from labelsbase.net
     """
-    labelbase_url = 'https://labelsbase.net/?a='
+    labelbase_url = 'https://labelsbase.net/search?a='
 
     artist_query = re.sub('[&]', '%26', artist)
-    artist_qurey = re.sub('[ ]', '+', artist_query)
+    artist_query = re.sub('[ ]', '+', artist_query)
     url = labelbase_url + artist_query
     soup = get_soup(url)
     labels = []
     try:
-        for label_div in soup.find_all('div', {'class': 'row label-item'}):
+        for label_div in soup.find_all('div', {'class': 'col-sm-6 col-xs-12 label-item'}):
             label_info = label_div.find_all('a', href=True)
             labels.append(label_info[1].getText())
 

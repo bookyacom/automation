@@ -13,7 +13,7 @@ def get_soup_js(url):
     soup: Parsed html site
     """
     try:
-        path_to_chromedriver = '/Users/nequalstim/Desktop/bookya/chromedriver'
+        path_to_chromedriver = os.getcwd()+'/chromedriver'
         browser = webdriver.Chrome(executable_path = path_to_chromedriver)
         # browser.wait = WebDriverWait(browser, 2)
         browser.get(url)

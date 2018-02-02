@@ -1,6 +1,8 @@
+import os
 from soup import get_soup_js
 from socials import *
 from openpyxl import Workbook
+from links import artist_on_bookya
 
 partyflock_url = 'https://partyflock.nl'
 
@@ -91,35 +93,35 @@ def get_information(artist_urls):
     filename = 'Partyflock_artists.xlsx'
     ws = wb.active
     ws.title = 'Partyflock'
-    file_path = '/Users/nequalstim/Desktop/'
+    file_path = os.getcwd()
 
     init_artist_profiles(ws)
     row_count = 2
     for artist_url in artist_urls: 
         artist_page = get_soup_js(partyflock_url + artist_url)
         if artist_2017(artist_page):
-            ws.cell(row=row_count, column = 9).value = artist_url
-
-            get_socials(artist_page, ws, row_count)
-
             artist = name(artist_page)
-            
-            ws.cell(row=row_count, column = 1).value = artist
+            if not artist_on_bookya(artist):
+                ws.cell(row=row_count, column = 9).value = artist_url
 
-            ws.cell(row=row_count, column = 2).value = website(artist_page)
+                get_socials(artist_page, ws, row_count)
 
-            ws.cell(row=row_count, column = 3).value = labels(artist)
+                ws.cell(row=row_count, column = 1).value = artist
 
-            ws.cell(row=row_count, column = 16).value = bio(artist_page)
-            
-            ws.cell(row=row_count, column = 17).value = genres(artist_page)
+                ws.cell(row=row_count, column = 2).value = website(artist_page)
 
-            # for nicer formatting in excel
-            placeholders = [5, 7, 8, 10, 15, 18]
-            for column in placeholders:
-                ws.cell(row=row_count, column=column).value = ' '
+                ws.cell(row=row_count, column = 3).value = labels(artist)
 
-            row_count += 1
+                ws.cell(row=row_count, column = 16).value = bio(artist_page)
+
+                ws.cell(row=row_count, column = 17).value = genres(artist_page)
+
+                # for nicer formatting in excel
+                placeholders = [5, 7, 8, 10, 15, 18]
+                for column in placeholders:
+                    ws.cell(row=row_count, column=column).value = ' '
+
+                row_count += 1
 
         else: 
             pass

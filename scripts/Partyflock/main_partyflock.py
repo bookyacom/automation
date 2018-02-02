@@ -3,7 +3,7 @@ import sys
 from links import get_artist_links
 from scrape_artist import get_information
 
-file_path = '/Users/nequalstim/Desktop/partyflock'
+file_path = os.getcwd()
 
 mode = sys.argv[1]
 
@@ -17,7 +17,7 @@ elif mode == "2":
         print('USAGE: [mode=2] [file_name]')
         sys.exit()
 
-    file_name = sys.argv[1]
+    file_name = sys.argv[2]
     artist_urls = [line.rstrip('\n') for line in open(os.path.join(file_path, file_name), 'r')]
 else:
     print('unknown mode')
