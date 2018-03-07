@@ -30,6 +30,18 @@ def artist_to_query(artist):
     return artist_query
 
 def lastfm(artist):
+    """
+    Get lastfm ID for given artist straight from lastfm website 
+
+    Arguments:
+    artist: name of artist
+
+    Return: 
+    link_clean: lastfm id
+
+    Example:
+    lastfm(Ben Klock) -> music/Ben+Klock
+    """
     artist_lf = artist_to_query(artist)
     artist_lf = artist_lf.replace("´","")
     url = lastfm_url + artist_lf
@@ -43,6 +55,18 @@ def lastfm(artist):
         return ' '
 
 def songkick(artist):
+    """
+    Get songkick ID for given artist straight from songkick website 
+
+    Arguments:
+    artist: name of artist
+
+    Return: 
+    link_clean: songkick id
+
+    Example:
+    songkick(Ben Klock) -> 286113-ben-klock
+    """
     artist_sk = artist_to_query(artist)
     artist_sk = artist_sk.replace("´","")
     url = sk_url + artist_sk
@@ -75,6 +99,18 @@ def clean_twitter(url):
         return clean
 
 def twitter(artist):
+    """
+    Get Twitter link for a given artist from Google by searching "artist dj twitter"
+
+    Checks whether it's really a twitter link, if not return empty string.
+    Otherwise first link from search is returned.
+
+    Arguments:
+    artist: name of the artist
+    
+    Return: 
+    twitter_clean: twitter link of artist
+    """    
     artist_google = artist_to_query(artist)
     url = google_url + artist_google + "+dj+twitter"
     soup = get_soup(url)
@@ -94,9 +130,22 @@ def twitter(artist):
 
 def clean_fb(url):
     #TODO Facebook strings
-    return url.replace('https://nl-nl.facebook.com/')
+    return url.replace('https://nl-nl.facebook.com/').replace('https://de-de.facebook.com/')
 
 def facebook(artist):
+
+    """
+    Get Facebook link for a given artist from Google by searching "artist dj facebook"
+
+    Checks whether it's really a facebook link, if not return empty string.
+    Otherwise first link from search is returned.
+
+    Arguments:
+    artist: name of the artist
+    
+    Return: 
+    facebook_clean: facebook link of artist
+    """    
     artist_fb = artist_to_query(artist)
     url = google_url + artist_fb + "+dj+facebook"
     soup = get_soup(url)
@@ -106,11 +155,21 @@ def facebook(artist):
             facebook_clean = clean_fb(facebook)
             return facebook_clean
         else:
-            raise ValueError('Not a Twitter link!')
+            raise ValueError('Not a Facebook link!')
     except:
         return ' '
 
 def clean_insta(url):
+    """
+    Gets rid of unnecessary information in url. 
+    If its not an instagram link, or a link which merely tagged the artist return empty string.
+
+    Arguments:
+    url: instagram url to be cleaned
+
+    Example: 
+    clean_insta(https://www.instagram.com/amelie_lens/?hl=de) -> amlie_lens
+    """
     out = ['tags', '/p/', 'pictaram', 'the picta']
     if any(x in url for x in out):
         return ' '
@@ -123,6 +182,18 @@ def clean_insta(url):
         return clean
 
 def instagram(artist):
+    """
+    Get Instagram link for a given artist from Google by searching "artist dj instagram"
+
+    Checks whether it's really an instagram link, if not return empty string.
+    Otherwise first link from search is returned
+
+    Arguments:
+    artist: name of the artist
+
+    Return: 
+    None
+    """
     artist_g = artist_to_query(artist)
     url = google_url + artist_g + "+dj+instagram"
     soup = get_soup(url)
@@ -135,6 +206,19 @@ def instagram(artist):
         return ' '
 
 def partyflock(artist):
+    """
+    Get the partyflock link of a given artist directly via Partyflock search function
+
+    Arguments:
+    artist: name of artist
+
+    Return: 
+    link_clean: partyflock link
+
+    Example: 
+    partyflock('Adam Beyer') -> 'https://partyflock.nl/artist/190:Adam-Beyer'
+
+    """
     artist_pf = re.sub('[ ]', '+', artist)
     url = partyflock_url + artist_pf
     soup = get_soup_js(url)
@@ -146,6 +230,15 @@ def partyflock(artist):
         return ' '
 
 def record_labels(artist):
+    """
+    Get all the record labels for a given artist from labelsbase.com
+
+    Arguments
+    artist: name of the artist
+
+    Return:
+    artist_labels_return: string with comma-seperated labels
+    """
 
     artist_query = artist_to_query(artist)
     url = labelbase_url + artist_query
@@ -161,9 +254,3 @@ def record_labels(artist):
 
     except:
         return ' '
-
-
-
-
-
-
