@@ -14,8 +14,9 @@ def get_soup_js(url):
     """
     try:
         path_to_chromedriver = os.getcwd()+'/chromedriver'
-        browser = webdriver.Chrome(executable_path = path_to_chromedriver)
-        # browser.wait = WebDriverWait(browser, 2)
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        browser = webdriver.Chrome(chrome_options=options, executable_path=path_to_chromedriver)
         browser.get(url)
         # sleep(2)
         html = browser.page_source
