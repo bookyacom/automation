@@ -6,10 +6,10 @@ BeautifulSoup [https://www.crummy.com/software/BeautifulSoup/bs4/doc/]
 requests [http://docs.python-requests.org/en/master/]
 selenium [http://selenium-python.readthedocs.io/]
 
-Chromedriver needs to be installed (-> see soup.py/get_soup_js() path to chromedriver)
+Chromedriver  needs to be installed (-> see soup.py/get_soup_js() path to chromedriver) [https://sites.google.com/a/chromium.org/chromedriver/home]
 
 ## Get started
-USAGE [mode] ([file name])
+USAGE python main_partyflock.py [mode] ([file name])
 
 The Scraper works in two modes, which will be explained in the following.
 The difference between them is where they retrieve the partyflock links from. 
