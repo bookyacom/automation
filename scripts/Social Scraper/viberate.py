@@ -30,6 +30,12 @@ def viberate(artist, ws, row):
     artist: artist name
     ws: file pointer for excel sheet
     row: row for artist entry
+
+    Side Effects:
+    Directly write into the Excel sheet via the given file pointer "ws"
+
+    Return:
+    None
     """
 
     artist_formatted = re.sub('( & )', '-', artist)
