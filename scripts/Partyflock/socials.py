@@ -3,7 +3,7 @@ import re
 from url_cleaner import *
 import sys
 
-def name (artist_page):
+def name(artist_page):
     """
     Simply return the name of an artist
 
@@ -19,6 +19,7 @@ def name (artist_page):
         name = name_.getText()
         return name
     except:
+        print("Unexpected error in name function", sys.exc_info()[0])
         return ' '
 
 def get_socials(artist_page, ws, row):
@@ -95,6 +96,7 @@ def genres(artist_page):
 
         return ','.join(genres)
     except:
+        print("Unexpected error in genres function", sys.exc_info()[0])
         return ' '
 
 def email(artist_page):
@@ -116,6 +118,7 @@ def email(artist_page):
                 return mail
         return ' '
     except:
+        print("Unexpected error in email function", sys.exc_info()[0])
         return ' '
 
 def bio(artist_page):
@@ -143,6 +146,7 @@ def bio(artist_page):
             bio = re.sub(r'.+\d{4}', '', bio_)
             return bio.strip()
         except:
+            print("Unexpected error in bio function", sys.exc_info()[0])
             return ' '
 
 def labels(artist):
@@ -164,4 +168,5 @@ def labels(artist):
         return ','.join(labels)
 
     except:
+        print("Unexpected error in labels function", sys.exc_info()[0])
         return ' '
