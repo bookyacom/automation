@@ -16,12 +16,13 @@ The difference between them is where they retrieve the partyflock links from.
 
     Mode 1
 
-    Scraper will get the links by himself from the Partyflock site and filter out artists, that are listed in the bookya DB. 
+    Scraper will get the links from the Partyflock site by himself and filter out artists, that are already listed in the bookya DB. 
 
     LAUNCH python main_partyflock.py 1
 
     Mode 2
 
-    Scraper will retrieve the links from given .txt file and then continue scraping. 
+    Scraper will retrieve the links from given .txt file and then continue scraping.
+    Note: There's a all_artists.txt file in the repository with all artist links scraped in mid January. 
 
     LAUNCH python main_partyflock.py 2 example.txt
