@@ -4,6 +4,9 @@ from viberate import viberate
 from socials import lastfm, record_labels, facebook, instagram, songkick, partyflock
 
 def init_artist_profiles(ws):
+    """
+    Initialize Workbook with right header
+    """
     ws.cell(row=1, column = 1).value = 'display_name'
     ws.cell(row=1, column = 2).value = 'websites'
     ws.cell(row=1, column = 3).value = 'record_labels'
@@ -26,7 +29,7 @@ def scrape_artists(artists):
     Scrape all the social information for artists
 
     First try on Viberate (they have good data)
-    If artist not on Viberate scrape manually
+    If artist not on Viberate scrape manually via Google
 
     Arguments:
     artists: Array filled with artist names
@@ -47,7 +50,7 @@ def scrape_artists(artists):
 
         ws.cell(row=row, column=1).value = artist
 
-        #viberate doesn't have lastfm listed, so we scrape it for all artists
+        #viberate doesn't have lastfm and labels listed, so we scrape it for all artists
         ws.cell(row=row, column=7).value = lastfm(artist)
         ws.cell(row=row, column=3).value = record_labels(artist)
 
