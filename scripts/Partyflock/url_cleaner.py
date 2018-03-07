@@ -22,7 +22,7 @@ def clean_url(url, site):
 
 """
 All of the following functions take in the string retrieved from Partyflock 
-and get rid of unnecessary information, mostly a desciption of the url 
+and get rid of unnecessary information, mostly a description of the url 
 such as 'facebookpage ' or 'spotify '
 
 Argument:

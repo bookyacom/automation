@@ -43,7 +43,7 @@ def init_artist_profiles(ws):
 def artist_2017(artist_page):
     """
     Gives True or False to the question:
-    Did an artist have an event in 2017 or 2018?
+    Did this artist have an event in 2017 or 2018?
 
     Return:
     True: did have an event
@@ -81,7 +81,7 @@ def get_information(artist_urls):
 
     Arguments: 
     artist_urls: array filled with partyflock artist links
-    e.g. '/artist/39874:Dk', '/artist/38057:Delirium-Johnny'
+    e.g. ['/artist/39874:Dk', '/artist/38057:Delirium-Johnny']
 
     Side effects:
     Creates and initializes Workbook, gathers all the data (social, labels etc.)
