@@ -7,18 +7,16 @@ import os
 def get_soup_js(url):
     """
     Get html and javascript from site and parse it with Beautiful Soup
-
     Arguments:
     url: URL to be parsed
-
     Return:
     soup: Parsed html site
-
     """
     try:
         path_to_chromedriver = '/Users/nequalstim/Desktop/bookya/chromedriver'
-        browser = webdriver.Chrome(executable_path = path_to_chromedriver)
-        # browser.wait = WebDriverWait(browser, 2)
+        options = webdriver.ChromeOptions()
+        options.add_argument('headless')
+        browser = webdriver.Chrome(chrome_options=options, executable_path=path_to_chromedriver)
         browser.get(url)
         # sleep(2)
         html = browser.page_source
@@ -31,10 +29,8 @@ def get_soup_js(url):
 def get_soup(url):
     """
     Get html from site and parse it with Beautiful Soup
-
     Arguments:
     url: URL to be parsed
-
     Return:
     soup: Parsed html site
     """
