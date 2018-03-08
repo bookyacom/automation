@@ -22,7 +22,8 @@ if len(sys.argv) < 2:
     print('Give me an excel file with artists in display_name column')
     sys.exit()
 
-artists = read_artists_from_excel(sys.argv[1])
+input_file = sys.argv[1]
 
+artists = read_artists_from_excel(input_file)
 
 scrape_artists(artists)
