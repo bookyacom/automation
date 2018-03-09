@@ -17,6 +17,7 @@ from scrape_links import scrape_links_venue
 file_path = os.getcwd()
 
 if len(sys.argv) < 2: 
+    print('Give the name of at least one country')
     print('USAGE: python3 main_venues.py [countries]')
     sys.exit()
 
