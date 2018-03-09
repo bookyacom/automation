@@ -11,7 +11,7 @@ def write_to_excel(ws, festival, row):
     row: row of sheet to write info in
     
     Side effects:
-    write into Excel sheet
+    write into Excel
 
     Return: 
     None
@@ -35,7 +35,7 @@ def write_to_excel(ws, festival, row):
         ws.cell(row=row, column=col).value = ' '
 
 
-def initList (ws):
+def event_header(ws):
     #initialitze table with values
     ws.cell(row=1, column = 1).value = "display_name"
     ws.cell(row=1, column = 2).value = "profile_photo"
