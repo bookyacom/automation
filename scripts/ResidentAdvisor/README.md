@@ -15,7 +15,7 @@ Chromedriver  needs to be installed (-> see soup.py/get_soup_js() path to chrome
 
     LAUNCH python3 main_venues.py [countries]
 
-    This scraper will first collect all the links of the venues in a given country and then start scraping them, if the venue is still alive (had to have an event in 2016/17/18).
+    This scraper will first collect all the links of the venues in a given country and then start__ scraping them, if the venue is still alive (had to have an event in 2016/17/18).\n
     Further, it extracts all the event links from the venues and outputs them in a .txt file for later scraping. 
 
     2. Promoters
