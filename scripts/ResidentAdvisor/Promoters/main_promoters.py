@@ -1,44 +1,42 @@
+"""
+Start point of the scraper, where user gives the names of the countries he would like 
+to have scraped as a command line argument. 
+
+The corresponding IDs of each country are stored in a dictionary and subsequently scraped for 
+their promoter links. These promoter_links are handed over to the next method then -> scrape_links_promoter
+"""
+
 import sys 
 import os 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__))+ '/..'))
 
 from venue_ids import get_ids
-from RA_country import scrape_country
 
-file_path = '/Users/nequalstim/Desktop/bookya/temp'
+file_path = os.getcwd()
 
 if len(sys.argv) < 2: 
-    print('USAGE: [country name] ([File.txt])')
+    print('Give the name of at least one country')
+    print('USAGE: python3 main_promoters.py [countries]')
     sys.exit()
 
 #take country names via cmd line
-countries = sys.argv
+countries = sys.argv[1:]
 
-country = countries[1]
+country_overview = get_ids(country)
+for country, ids in country_overview.items():
 
-#links of country will be collected and scraped
-if len(countries) == 2:
+    RA_Id = ids['ra_id']
+    end = ids['end']
 
-    country_overview = get_ids(country)
-    for country, ids in country_overview.items():
+    promoter_links = []
 
-        RA_Id = ids['ra_id']
-        end = ids['end']
+    # get all the promoter links from a country and save them to promoter_links
+    for x, y in zip(ra_id, end):
+        get_all_links(x, y, promoter_links, "promoter")
 
-        links = []
+    #scrape the collected links
+    scrape_links_promoter(promoter_links, country)
 
-        # get all the venue links from all of COUNTRY and save them to links
-        for x, y in zip(ra_id, end):
-            get_all_links(x, y, links, "promoter")
-
-        scrape_links_promoter(links, country)
-
-
-#user gave file with links, which will be scraped
-if len(countries) == 3:
-
-    file_name = countries[2]
-    filtered_links = [line.rstrip('\n') for line in open(os.path.join(file_path, file_name), 'r')]
 
 
 
