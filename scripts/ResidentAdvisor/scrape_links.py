@@ -1,15 +1,19 @@
 import os
-from soup import get_soup, get_soup_js
+from bs4 import BeautifulSoup
 from openpyxl import Workbook
+
+from soup import get_soup, get_soup_js
 from RA_links import active
 from RA_site_elements import *
-from bs4 import BeautifulSoup
+from headers import *
 
 
 def scrape_links_venue(links, country):
 
     """
-    The brain of the scraper. Takes in link and calls all individual scraper functions.
+    The brain of the scraper. Takes in the links of venues and calls all individual scraper functions.
+    Results will be written into a row of the excel file
+
 
     Arguments:
     links: array of residentadvisor links
@@ -19,44 +23,45 @@ def scrape_links_venue(links, country):
     None
 
     Side Effects:
-    Create Excel File and fill it with all the scraped information
+    Create Excel File ([country]_venues.xlsx) and fill it with all the scraped information.
+    Creates a .txt file ([country]_events.txt), filled with RA events extracted from each venue. 
     """
     wb = Workbook()
-    filename1 = country + '_venues.xlsx'
+    filename = country + '_venues.xlsx'
     ws = wb.active
     ws.title = country
 
+    #initialize header in Excel sheet
     set_up_club(ws)
 
-    file_path = '/Users/nequalstim/Desktop/bookya/temp'
+    file_path = os.getcwd
 
     row_count = 1
     events=[]
 
-    for item in links:
-        soup = get_soup_js(item)
+    for RA_link in links:
+        site = get_soup_js(RA_link)
 
-        #club had an event in 2016, 2017
-        if active(soup):
+        #club had an event in 2016, 17, 18
+        if active(site):
             row_count += 1
 
-            ws.cell(row = row_count, column = 1).value = item
+            ws.cell(row = row_count, column = 1).value = RA_link
 
-            # print out sorted (nach residentadvisorlink) list of clubs
-            clubname = soup.find('h1').string.encode('utf-8')
+            clubname = site.find('h1').string.encode('utf-8')
             ws.cell(row = row_count, column = 2).value = clubname
 
             #get picture links
-            ws.cell(row = row_count, column = 3).value = picture(soup)
+            ws.cell(row = row_count, column = 3).value = picture(site)
 
-            # print bio to file
-            ws.cell(row = row_count, column = 8).value = bio(soup)
+            #get bio of venue
+            ws.cell(row = row_count, column = 8).value = bio(site)
 
-            #print adresses of clubs
-            ws.cell(row = row_count, column = 14).value = address(soup)
+            #get address
+            ws.cell(row = row_count, column = 14).value = address(site)
 
             try:
-                top_bar = soup.find('ul', {'class': 'clearfix'})
+                top_bar = site.find('ul', {'class': 'clearfix'})
                 #Get capacity number
                 ws.cell(row = row_count, column = 13).value = capacity(top_bar)
 
@@ -76,16 +81,18 @@ def scrape_links_venue(links, country):
                 pass
 
             #extract all the event links from venues
-            get_events(soup, events)
+            get_events(site, events)
 
             # put a space in empty cells for nicer formatting in excel
-            placeholders(ws,row_count)
+            placeholders = [4, 6, 10, 11, 12, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26]
+            for column in placeholders:
+                ws.cell(row = y, column = column).value = ' '
         else: 
             pass
 
     events_file = open(os.path.join(file_path, country+'_event.txt'), 'w')
     write_to_file(events, events_file)
-    wb.save(file_path + '/' + filename1)
+    wb.save(file_path + '/' + filename)
 
 def scrape_links_promoter(links, country):
 
@@ -101,35 +108,38 @@ def scrape_links_promoter(links, country):
 
     Side Effects:
     Create Excel File and fill it with all the scraped information
+    Creates a .txt file ([country]_events.txt), filled with RA events extracted from each promoter. 
+
     """
     wb = Workbook()
-    filename1 = country + '_promoters.xlsx'
+    filename = country + '_promoters.xlsx'
     ws = wb.active
     ws.title = country
 
+    #Initialize Excel header
     set_up_promoter(ws)
 
-    file_path = '/Users/nequalstim/Desktop/bookya/temp'
+    file_path = os.getcwd()
 
     row_count = 1
     events=[]
-    for item in links:
-        soup = get_soup_js(item)
+    for link in links:
+        site = get_soup_js(link)
 
-        if active(soup):
+        if active(site):
             #RA_link
-            ws.cell(row = y, column = 3).value = item
+            ws.cell(row = y, column = 3).value = link
 
-            promoter_name = soup.find('h1').string.encode('utf-8')
+            promoter_name = site.find('h1').string.encode('utf-8')
             ws.cell(row = y, column = 1).value = promoter_name
 
             #get picture links
-            ws.cell(row = y, column = 7).value = picture(soup)
+            ws.cell(row = y, column = 7).value = picture(site)
 
             # print bio to file
-            ws.cell(row = y, column = 8).value = bio(soup)
+            ws.cell(row = y, column = 8).value = bio(site)
 
-            top_bar = soup.find('ul', {'class': 'clearfix'})
+            top_bar = site.find('ul', {'class': 'clearfix'})
             sites = top_bar.find_all('a', href= True)
 
             #Get Website and Facebook
@@ -142,10 +152,10 @@ def scrape_links_promoter(links, country):
 
             placeholders = [2, 4, 9]
             for column in placeholders:
-                ws.cell(row = y, column = column).value = " "
+                ws.cell(row = y, column = column).value = ' '
             #extract all the event links from venues
             # put a space in empty cells for nicer formatting in excel
-            get_events(soup, events)
+            get_events(site, events)
             events_filtered = list(set(events))
 
         else:
@@ -153,179 +163,93 @@ def scrape_links_promoter(links, country):
 
     events_file = open(os.path.join(file_path, country+'_event.txt'), 'w')
     write_to_file(events_filtered, events_file)
-    wb.save(file_path + '/' + filename1)
+    #save excel file
+    wb.save(file_path + '/' + filename)
 
 def scrape_links_event(links):
+    """
+    This function scrapes all the information form RA event links. Links that have been collected
+    from venues and promoters sites, which contain information such as eventname, lineup, promoter, venue etc. 
+
+    Arguments:
+    links: array filled with RA event link
+
+    Return:
+    None
+
+    Side Effects:
+    Write the collected information into Excel sheet (RA_events.xlsx)
+    Output problem_artsist.txt file filled with artists, that had multiple matches
+    in the Bookya DB
+
+    """
     wb = Workbook()
-    filename1 = 'RA_events.xlsx'
+    filename = 'RA_events.xlsx'
     ws = wb.active
 
+    #Initialize Excel header
     set_up_event(ws)
 
-    file_path = '/Users/nequalstim/Desktop/bookya/temp'
+    file_path = os.getcwd()
 
+    #artists that have more than one match in the Bookya DB
     problem_artists = []
 
-    for y, link in enumerate(links, start=2):
-        soup = get_soup(link)
+    for row, link in enumerate(links, start=2):
 
-        ws.cell(row=y, column=1).value = name(soup)
+        site = get_soup(link)
 
-        ws.cell(row=y, column = 4).value = "noreply@bookya.com"
+        ws.cell(row=row, column=1).value = name(site)
 
-        div_event_item = soup.find("div", {"id": "event-item"})
+        ws.cell(row=row, column = 4).value = 'noreply@bookya.com'
+
+        div_event_item = site.find('div', {'id': 'event-item'})
+
         p_tags = div_event_item.find_all('p')
 
         #get line up
         notBookya, bookya, problem_artists = line_up(p_tags, problem_artists)
-        ws.cell(row=y, column = 22).value = ','.join(notBookya)
-        ws.cell(row=y, column = 23).value = ','.join(bookya)
+        ws.cell(row=row, column = 22).value = ','.join(notBookya)
+        ws.cell(row=row, column = 23).value = ','.join(bookya)
 
         #get bio
-        ws.cell(row=y, column=10).value = bio_event(p_tags)
+        ws.cell(row=row, column=10).value = bio_event(p_tags)
 
         #get flyer picture
-        ws.cell(row=y, column=3).value = flyer_picture(div_event_item)
+        ws.cell(row=row, column=3).value = flyer_picture(div_event_item)
 
         #dates and venue both need a_tags from top_bar
-        top_bar = soup.find('ul', {'class': 'clearfix'})
+        top_bar = site.find('ul', {'class': 'clearfix'})
         a_tags = top_bar.find_all('a', href=True)
 
         start_date, end_date = dates(a_tags)
-        ws.cell(row=y, column=13).value = start_date
-        ws.cell(row=y, column=14).value = end_date
+        ws.cell(row=row, column=13).value = start_date
+        ws.cell(row=row, column=14).value = end_date
 
         found_venue, venue_name = venue(a_tags)
         if (found_venue):
-            ws.cell(row=y, column=21).value = venue_name
+            ws.cell(row=row, column=21).value = venue_name
         else:
-            ws.cell(row=y, column=20).value = venue_name
+            ws.cell(row=row, column=20).value = venue_name
 
         #get costs for event
         li = top_bar.find_all('li')
         cost, currency = costs(li)
-        ws.cell(row=y, column = 15).value = cost
-        ws.cell(row=y, column = 16).value = currency
+        ws.cell(row=row, column = 15).value = cost
+        ws.cell(row=row, column = 16).value = currency
 
         found_prom, promoter_name = promoter(li)
         if(found_prom):
-            ws.cell(row=y, column=19).value = promoter_name
+            ws.cell(row=row, column=19).value = promoter_name
         else:
-            ws.cell(row=y, column=18).value = promoter_name
+            ws.cell(row=row, column=18).value = promoter_name
 
         # put a space in empty cells for nicer formatting in excel
         placeholders = [2, 5, 6, 7, 8, 9, 11, 12, 17, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
         for column in placeholders:
-            ws.cell(row = y, column = column).value = " "
+            ws.cell(row = row, column = column).value = " "
 
     artistfile = open(os.path.join(file_path, 'problem_artists.txt'), 'w')
     problem_artists = list(set(problem_artists))
     write_to_file(problem_artists, artistfile)
-    wb.save(file_path + '/' + filename1)
-
-def set_up_club (ws):
-    """
-    Initialize the Excel File with the Header
-
-    Arguments:
-    ws: active Workbook
-
-    Return:
-    None
-    """
-    ws.cell(row=1, column = 1).value = "RA_URL"
-    ws.cell(row=1, column = 2).value = "dispay_name"
-    ws.cell(row=1, column = 3).value = "profile_photo"
-    ws.cell(row=1, column = 4).value = "email"
-    ws.cell(row=1, column = 5).value = "public_email"
-    ws.cell(row=1, column = 6).value = "public_contact_number"
-    ws.cell(row=1, column = 7).value = "contact_number"
-    ws.cell(row=1, column = 8).value = "bio"
-    ws.cell(row=1, column = 9).value = "websites"
-    ws.cell(row=1, column = 10).value = "genre_list"
-    ws.cell(row=1, column = 11).value = "type_list"
-    ws.cell(row=1, column = 12).value = "performance_area_count"
-    ws.cell(row=1, column = 13).value = "capacity"
-    ws.cell(row=1, column = 14).value = "address_line_one"
-    ws.cell(row=1, column = 15).value = "address_line_two"
-    ws.cell(row=1, column = 16).value = "external_id"
-    ws.cell(row=1, column = 17).value = "city"
-    ws.cell(row=1, column = 18).value = "country"
-    ws.cell(row=1, column = 19).value = "contact_person"
-    ws.cell(row=1, column = 20).value = "facebook_page"
-    ws.cell(row=1, column = 21).value = "instagram"
-    ws.cell(row=1, column = 22).value = "mixcloud"
-    ws.cell(row=1, column = 23).value = "patryflock"
-    ws.cell(row=1, column = 24).value = "songkick"
-    ws.cell(row=1, column = 25).value = "twitter"
-    ws.cell(row=1, column = 26).value = "youtube_channel"
-
-def set_up_promoter (ws):
-    """
-    Initialize the Excel File with the Header
-
-    Arguments:
-    ws: active Workbook
-
-    Return:
-    None
-    """
-    #initialitze table with values
-    ws.cell(row=1, column = 1).value = "Name Promoter"
-    ws.cell(row=1, column = 2).value = "Location"
-    ws.cell(row=1, column = 3).value = "RA_link"
-    ws.cell(row=1, column = 4).value = "Genre"
-    ws.cell(row=1, column = 5).value = "Website"
-    ws.cell(row=1, column = 6).value = "Facebook"
-    ws.cell(row=1, column = 7).value = "Picture"
-    ws.cell(row=1, column = 8).value = "Bio"
-    ws.cell(row=1, column = 9).value = "Contact Person"
-    ws.cell(row=1, column = 10).value = "Email"
-
-def set_up_event (ws):
-
-    """
-    Initialize the Excel File with the Header
-
-    Arguments:
-    ws: active Workbook
-
-    Return:
-    None
-    """
-
-    ws.cell(row=1, column = 1).value = "display_name"
-    ws.cell(row=1, column = 2).value = "profile_photo"
-    ws.cell(row=1, column = 3).value = "cover_photo"
-    ws.cell(row=1, column = 4).value = "email"
-    ws.cell(row=1, column = 5).value = "public_email"
-    ws.cell(row=1, column = 6).value = "public_contact_number"
-    ws.cell(row=1, column = 7).value = "search_artist"
-    ws.cell(row=1, column = 8).value = "header_text"
-    ws.cell(row=1, column = 9).value = "contact_number"
-    ws.cell(row=1, column = 10).value = "bio"
-    ws.cell(row=1, column = 11).value = "websites"
-    ws.cell(row=1, column = 12).value = "genre_list"
-    ws.cell(row=1, column = 13).value = "start_date"
-    ws.cell(row=1, column = 14).value = "end_date"
-    ws.cell(row=1, column = 15).value = "ticket_price"
-    ws.cell(row=1, column = 16).value = "ticket_currency"
-    ws.cell(row=1, column = 17).value = "contact_person"
-    ws.cell(row=1, column = 18).value = "promoter_name"
-    ws.cell(row=1, column = 19).value = "promoter_url"
-    ws.cell(row=1, column = 20).value = "venue_name"
-    ws.cell(row=1, column = 21).value = "venue_url"
-    ws.cell(row=1, column = 22).value = "artist_names"
-    ws.cell(row=1, column = 23).value = "artist_urls"
-    ws.cell(row=1, column = 24).value = "facebook_page"
-    ws.cell(row=1, column = 25).value = "beatport_dj"
-    ws.cell(row=1, column = 26).value = "instagram"
-    ws.cell(row=1, column = 27).value = "lastfm"
-    ws.cell(row=1, column = 28).value = "mixcloud"
-    ws.cell(row=1, column = 29).value = "partyflock"
-    ws.cell(row=1, column = 30).value = "songkick"
-    ws.cell(row=1, column = 31).value = "soundcloud"
-    ws.cell(row=1, column = 32).value = "spotify"
-    ws.cell(row=1, column = 33).value = "twitter"
-    ws.cell(row=1, column = 34).value = "youtube_channel"
-    ws.cell(row=1, column = 35).value = "bandsintown"
+    wb.save(file_path + '/' + filename)

@@ -97,12 +97,13 @@ def flyer_picture(soup):
     soup: Page of the event parsed with BS
 
     Return:
-    picture: link of fyler picture
+    picture: link of flyer picture
     """
     try:
-        fyler_div = soup.find('div', {'class': 'flyer'})
-        flyer_dirty= flyer_div.find('a', href=True)
+        flyer_div = soup.find('div', {'class': 'flyer'})
+        flyer_dirty = flyer_div.find('a', href=True)
         flyer = "https://www.residentadvisor.net" + flyer_dirty['href']
+        print('are yu fucking kidding me?')
         return flyer
     except:
         return ''
@@ -226,24 +227,6 @@ def costs(li):
             cost_clean, currency_ = '', ''
 
     return cost_clean, currency_
-
-def placeholders(ws,y):
-    """
-    Sets empty cells to " " for nicer formatting in Excel
-
-    Arguments:
-    ws: Workbook
-    y: row counter
-
-    Return:
-    None
-
-    Side Effect:
-    Set the empty cells to " "
-    """
-    placeholders = [4, 6, 10, 11, 12, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26]
-    for column in placeholders:
-        ws.cell(row = y, column = column).value = " "
 
 def get_events(soup, events):
     """
