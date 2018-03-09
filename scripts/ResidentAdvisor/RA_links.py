@@ -4,12 +4,12 @@ from bs4 import BeautifulSoup
 
 def get_all_links (RA_id, list_end, links, switch):
     """
-    get links from all the venues/promoters on a given site
+    Get links from all the venues/promoters on a given site
 
     Arguments:
     RA_id: Id from city/country
     list_end:  ID of last club/promoter on the list (break point)
-    switch: venue or promoter?
+    switch: determines whether it's a venue or promoter
 
     Side effect:
     links: gets filled with RA club/promoter links
@@ -33,18 +33,18 @@ def get_all_links (RA_id, list_end, links, switch):
 def active(soup):
     """
     check whether a given listing is still active or not
-    criteria: Did the club host an event in 2016/2017?
+    criteria: Did the club host an event in 2016/2017/2018?
 
     Arguments:
     soup: page of venue/promoter parsed with BS
 
     Return:
-    True: club had an event in 2016/2017
+    True: club had an event in 2016/2017/2018
     False: club is not active anymore
 
     """
 
-    #archive
+    #archive of events 
     try:
         archive_listing = soup.find('div', {'id': 'divArchiveEvents'})
         events = archive_listing.find_all('ul', {'class': 'ptb8'})
@@ -55,7 +55,9 @@ def active(soup):
                 return True
             elif '2017' in time:
                 return True
+            elif '2018' in time:
+                return True
 
         return False
     except:
-        return False
+        return Fals
