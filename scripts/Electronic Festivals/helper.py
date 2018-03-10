@@ -96,7 +96,7 @@ def request_db(request, type_):
     Returns matchings of a request in the Bookya DB
 
     Arugments:
-    festival: name of festival
+    request: name of festival, artist, event
     type_: promoter, artist, event?
 
     Return: 
@@ -105,8 +105,8 @@ def request_db(request, type_):
 
     api_url = "https://admin-api.bookya.com/admin/check?"
 
-    festival_req = request.encode('utf8')
-    parameters = {"name": festival_req, "type": type_}
+    req = request.encode('utf8')
+    parameters = {"name": req, "type": type_}
     response = requests.get(api_url, params=parameters)
     data = response.json()
 
