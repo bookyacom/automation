@@ -1,40 +1,6 @@
 from openpyxl import Workbook
 import requests
 
-def write_to_excel(ws, festival, row):
-    """
-    Write the festival to the right columns in a given sheet
-
-    Arguments:
-    ws: pointer to Workbook
-    festival: array with all festival info (display_name, artists, price etc.)
-    row: row of sheet to write info in
-    
-    Side effects:
-    write into Excel
-
-    Return: 
-    None
-    """
-    ws.cell(row=row, column=1).value = festival[0]
-    ws.cell(row=row, column=8).value = festival[7]
-    ws.cell(row=row, column=9).value = festival[8]
-    ws.cell(row=row, column=10).value = festival[9]
-    ws.cell(row=row, column=11).value = festival[10]
-    ws.cell(row=row, column=12).value = festival[11]
-    ws.cell(row=row, column=13).value = festival[12]
-    ws.cell(row=row, column=16).value = festival[15]
-    ws.cell(row=row, column=17).value = festival[16]
-    ws.cell(row=row, column=19).value = festival[18]
-    ws.cell(row=row, column=20).value = festival[19]
-    ws.cell(row=row, column=21).value = festival[20]
-    ws.cell(row=row, column=35).value = festival[34]
-
-    placeholders = [2,3,4,5,6,7,14,15,18,22,23,24,25,26,27,28,29,30,31,32,33,34]
-    for col in placeholders:
-        ws.cell(row=row, column=col).value = ' '
-
-
 def event_header(ws):
     #initialitze table with values
     ws.cell(row=1, column = 1).value = "display_name"
@@ -72,24 +38,6 @@ def event_header(ws):
     ws.cell(row=1, column = 33).value = "bandsintown"
     ws.cell(row=1, column = 34).value = "garbage 1"
     ws.cell(row=1, column = 35).value = "garbage 2"
-
-def create_excel(name):
-    """
-    Create Excel Workbook 
-
-    Arguments: 
-    name: name of the Workbook
-
-    Return 
-    ws: pointer to workbook
-    wb: Workbook to save
-    """
-
-    wb = Workbook()
-    ws = wb.active
-    filename = name + '.xlsx'
-    ws.title = name
-    return ws, wb
 
 def request_db(request, type_):
     """

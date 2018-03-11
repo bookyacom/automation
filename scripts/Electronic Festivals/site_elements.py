@@ -5,7 +5,7 @@ from fuzzywuzzy import process
 from fuzzywuzzy import fuzz
 
 from helper import *
-
+from clean_festival import clean_festival
 def genre(site):
     """
     Get genres of an event 
@@ -126,7 +126,6 @@ def location(site):
     except:
         return ' '
 
-
 def get_promo_urls(site):
     """
     Get Facebook and Youtube link from a given site
@@ -191,10 +190,10 @@ def line_up(site, problem_djs, date):
     else:
         lineup_block = site.find('div', {'class','col-xs-12 nopadding list'})
 
+
     artist_names, artist_urls, problem_djs_ = extract_djs(lineup_block)
     problem_djs += problem_djs_
     return artist_names, artist_urls
-
 
 def extract_djs(block):
     """
@@ -210,10 +209,12 @@ def extract_djs(block):
     
     """
 
+    #return arrays
     artist_names = []
     artist_urls = []
     problem_djs = []
 
+    #iterate over artists in line up
     for artist_ in block.find_all('a', href=True):
         artist = artist_.get_text()
         result_db = request_db(artist, 'artist')
@@ -222,14 +223,14 @@ def extract_djs(block):
             artist_names.append(artist)
         #artist is in Bookya DB, one or multiple matches ? 
         elif len(result_db['profiles']) == 1:
-            artist_urls.append(result['profiles'][0]['bookya_url'])
+            artist_urls.append(result_db['profiles'][0]['bookya_url'])
         else:
             found_dj = False
             #fuzzy matching rate
             factor = 0
             #iterate over results from db and see which artist has highest matching
             for index, artis in enumerate(result_db['profiles']):
-                ratio = fuzz.ratio(dj, artis['name']) 
+                ratio = fuzz.ratio(artist, artis['name']) 
                 if ratio >= 75 and ratio > factor:
                     factor = ratio
                     found_dj = True
@@ -237,17 +238,76 @@ def extract_djs(block):
 
             #we found and artist with high matching probability
             if found_dj:
-                artist_urls.append(result['profiles'][artist_index]['bookya_url'])
+                artist_urls.append(result_db['profiles'][artist_index]['bookya_url'])
             #no artist found
             else:
+                artist_urls.append(artist+'MULTIPLE')
                 problem_djs.append(artist)
 
     return artist_names, artist_urls, problem_djs
 
+def promoter(name, website, country):
+    """
+    Will Match a festival in the bookya DB based on: 
+        1. name of festival
+        2. website
+        3. concepts
+        4. country
+    Festival has to fulfill one of the four criteria! 
+
+    Arguments
+    name: name of the festival
+    website: website of the festival
+    req_name: cleaned festival name for request
+    result_db: result from the bookya DB for a given festival
+    
+    Side effects:
+    write promoter_url and name into festival array
+
+    Return: 
+    promoter_name: name of promoter (not matched in Bookya DB)
+    promoter_url: url of promoter in Bookya DB
+    """
 
 
+    #check if website of promoter is the same -> if match, straight return 
+    try:
+        query_website = request_db(website, 'website')
+        if len(query_website['profiles']) == 1:
+            promoter_url = query_website['profiles'][0]['bookya_url']
+    except:
+        print('Festival does not have website')
 
+    #clean festival name
+    festival_request = clean_festival(name)
+    #query database
+    result_db = request_db(festival_request, 'promoter')
+    #no festival found
+    if not result_db['profiles']:
+        return ' ', ' '
 
+    #track the highest match ratio
+    name_highest = 0
+    concept_highest = 0
+    found_promoter = False
 
+    for index, result in enumerate(result_db['profiles']):
+        #Check if name or concept matches
+        name_ratio = fuzz.partial_ratio(festival_request, result['name'])
+        if name_ratio > 90 and name_ratio > name_highest:
+            promoter_index = index
+        try:
+            for concept in result['concepts'].split(','):
+                concept_ratio = fuzz.partial_ratio(festival_request, concept)
+                if  concept_ratio > 90 and concept_ratio > concept_highest:
+                    promoter_index = index
+        except:
+            print('Festival does not have Concepts')
+
+    if found_promoter:
+        promoter_url = result_db['profiles'][promoter_index]['bookya_url']
+        return ' ',promoter_url
+    else:
+        return name, ' '
 
 
