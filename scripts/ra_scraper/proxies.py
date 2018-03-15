@@ -24,9 +24,6 @@ for x in range(10):
         sys.exit(1)
 
 df = pd.DataFrame(data, columns=['ip'])
-df['tm_downloaded'] = time.time()
-df['tm_last_used'] = 0
-df['times_failed'] = 0
 
 with open(proxy_file, "a+") as f:
     df.to_csv(f, header=False, index=False, sep=";")
