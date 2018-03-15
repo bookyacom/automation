@@ -87,7 +87,7 @@ wb = Workbook()
 ws = wb.active
 ws.title = 'Event'
 
-file_path = '/Users/nequalstim/Desktop/bookya/RA/'
+file_path = 'Users/alvaro/code/automation/report/RA/'
 
 set_up_event(ws)
 
