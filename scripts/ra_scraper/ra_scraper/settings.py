@@ -107,7 +107,7 @@ DOWNLOADER_MIDDLEWARES = {
 # http://username:password@host2:port
 # http://host3:port
 # ...
-PROXY_LIST = '/path/to/proxy/list.txt'
+PROXY_LIST = str(Path().joinpath(Path().resolve(), "proxy_list.csv"))
 
 # Proxy mode
 # 0 = Every requests have different proxy
