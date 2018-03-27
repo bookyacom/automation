@@ -13,7 +13,7 @@ import sys
 proxy_file = "proxy_list.csv"
 
 data = list()
-for x in range(10):
+for x in range(24):
     time.sleep(5)
     r = requests.get("https://api.getproxylist.com/proxy").json()
     try:
@@ -21,7 +21,7 @@ for x in range(10):
     except KeyError:
         # 24 calls per day allowed, when exceeded return error msg
         print(r["error"])
-        sys.exit(1)
+        break
 
 df = pd.DataFrame(data, columns=['ip'])
 
