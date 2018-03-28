@@ -18,6 +18,6 @@ from django.urls import path, include
 from pipelines.views import home_page
 
 urlpatterns = [
-    path(r'^$', home_page, name='home'),
+    path('', home_page, name='home'),
     #path('admin/', admin.site.urls),
 ]

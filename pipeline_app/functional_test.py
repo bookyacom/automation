@@ -14,7 +14,7 @@ class NewVisitorTest(unittest.TestCase):
         self.browser.get('http://localhost:8000')
 
         # Amased by the first impression, he looks to the tab title to make sure it's real
-        self.assertIn('pipeline app - 4 real!', self.browser.title)
+        self.assertIn('pipeline - 4 real!', self.browser.title)
 
         # he sees the last entries scraped
         self.fail('Needs implementation')
