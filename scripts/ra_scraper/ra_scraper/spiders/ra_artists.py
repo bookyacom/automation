@@ -4,7 +4,7 @@ import scrapy
 class RaArtists(scrapy.Spider):
     name = "RA_Artists"
     start_urls = [
-        'https://www.residentadvisor.net/dj.aspx?area=%s' % (x,) for x in range(1, 3)
+        'https://www.residentadvisor.net/dj.aspx?area=%s' % (x,) for x in range(3, 501)
     ]
 
     def __init__(self):
