@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>pipeline - 4 real!</title>
+  </head>
+  <body>
+    <h1>Scraped</h1>
+    <form method="POST">
+      <input name="item_text"  id="edit_data" placeholder="Modify data" />
+      {% csrf_token %}
+    </form>
+
+    <table id="artist_table" >
+      <tr><td>{{ new_item_text }} </td></tr>
+    </table>
+  </body>
+</html>
